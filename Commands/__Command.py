@@ -1,4 +1,4 @@
-class Action():
+class Command():
 
     def __init__(self, partDB):
         self.partDB = partDB
@@ -12,4 +12,4 @@ class Action():
         pass
 
     def run(self):
-        raise Exception('Action not defined')
+        raise Exception('Command not defined')

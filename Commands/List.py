@@ -1,7 +1,7 @@
-import Actions.__Action
+import Commands.__Command
 
 
-class List(Actions.__Action.Action):
+class List(Commands.__Command.Command):
 
     def __init__(self, partDB):
         super().__init__(partDB)
