@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-import PersistentDict
 import argparse
 import sys
 import importlib
 import inspect
 import re
 import os
+import Database
 
 
 class PartDB:
@@ -51,11 +51,11 @@ class PartDB:
         self.parseArguments()
 
         # open database
-        with PersistentDict.PersistentDict('partdb.json', 'c', format='json') as self.db:
+        self.db = Database.Database('partdb.json')
 
-            # call requested action
-            action = self.actions[self.args.action](self)
-            action.run()
+        # call requested action
+        action = self.actions[self.args.action](self)
+        action.run()
 
 if __name__ == '__main__':
     PartDB(sys.argv).run()

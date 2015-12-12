@@ -7,6 +7,36 @@ class List(Actions.__Action.Action):
         super().__init__(partDB)
 
     def run(self):
-        for item in self.partDB.db:
+        COLUMNS = [
+            {
+                "label": "PartNumber",
+                "data": "manufacturerPartNumber",
+                "width": 20,
+                "formatter": "s"},
+            {
+                "label": "Description",
+                "data": "description",
+                "width": 50,
+                "formatter": "s"},
+            {
+                "label": "Quantity",
+                "data": "quantity",
+                "width": 10,
+                "formatter": "u"},
 
-            print(item, self.partDB.db[item])
+        ]
+
+        # Header
+        print(" | ".join(["%-*s" % (column['width'], column['label'][:column['width']])
+                          for column in COLUMNS]))
+        print("-|-".join(["-" * (column['width']) for column in COLUMNS]))
+
+        result = self.partDB.db.query()
+
+        # Data
+        for key, value in result.items():
+            print(" | ".join([("%-*" + column['formatter']) %
+                              (column['width'], value[column['data']][:column['width']] if type(value[column['data']]) == str else value[column['data']]) for column in COLUMNS]))
+
+        # Footer
+        print("-|-".join(["-" * (column['width']) for column in COLUMNS]))
