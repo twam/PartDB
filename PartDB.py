@@ -43,7 +43,7 @@ class PartDB:
         parser = argparse.ArgumentParser(
             description='PartDB', prog=self.argv[0])
         parser.add_argument('action', type=ActionArgument,
-                            help='action to perform')
+                            help='Action to perform. Allowed actions are %s.' % (", ".join(sorted([key for key in self.actions.keys()]))))
 
         self.args = parser.parse_args(self.argv[1:])
 
