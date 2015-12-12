@@ -6,6 +6,10 @@ class List(Commands.__Command.Command):
     def __init__(self, partDB):
         super().__init__(partDB)
 
+    @staticmethod
+    def getParserHelp():
+        return "List all parts."
+
     def run(self):
         COLUMNS = [
             {
