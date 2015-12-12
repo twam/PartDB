@@ -1,4 +1,9 @@
-import pickle, json, csv, os, shutil
+import pickle
+import json
+import csv
+import os
+import shutil
+
 
 class PersistentDict(dict):
     ''' Persistent dictionary with an API compatible with shelve and anydbm.
@@ -21,7 +26,7 @@ class PersistentDict(dict):
         self.format = format                # 'csv', 'json', or 'pickle'
         self.filename = filename
         if flag != 'n' and os.access(filename, os.R_OK):
-            fileobj = open(filename, 'rb' if format=='pickle' else 'r')
+            fileobj = open(filename, 'rb' if format == 'pickle' else 'r')
             with fileobj:
                 self.load(fileobj)
         dict.__init__(self, *args, **kwds)
@@ -33,7 +38,7 @@ class PersistentDict(dict):
         filename = self.filename
         tempname = filename + '.tmp'
         try:
-            with open(tempname, 'wb' if self.format=='pickle' else 'w') as fileobj:
+            with open(tempname, 'wb' if self.format == 'pickle' else 'w') as fileobj:
                 self.dump(fileobj)
         except Exception:
             os.remove(tempname)
