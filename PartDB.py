@@ -20,18 +20,32 @@ class PartDB:
         self.basePath = os.path.dirname(os.path.abspath(
             inspect.getfile(inspect.currentframe())))
 
-        # Load all commands
+        self._loadCommands()
+        self._loadDistributors()
+
+    def _loadCommands(self):
         commandsDir = os.path.join(self.basePath, 'Commands')
         self.commands = {}
         for command in os.listdir(commandsDir):
-            matches = re.match(r'(([A-Za-z]+)\.py)', command)
+            matches = re.match(r'(((?!test)[A-Za-z]+)\.py)', command)
             if matches:
                 commandName = matches.groups()[1].lower()
-                moduleName = matches.groups()[0]
                 className = matches.groups()[1]
 
                 self.commands[commandName] = getattr(
-                    importlib.import_module('Commands.' + className), className)
+                    importlib.import_module('Commands.' + className), className)(self)
+
+    def _loadDistributors(self):
+        distributorsDir = os.path.join(self.basePath, 'Distributors')
+        self.distributors = {}
+        for distributor in os.listdir(distributorsDir):
+            matches = re.match(r'(((?!test)[A-Za-z]+)\.py)', distributor)
+            if matches:
+                distributorName = matches.groups()[1].lower()
+                className = matches.groups()[1]
+
+                self.distributors[distributorName] = getattr(
+                    importlib.import_module('Distributors.' + className), className)(self)
 
     def parseArguments(self):
 
@@ -104,7 +118,7 @@ class PartDB:
         self.db = Database.Database(self.args.databaseFilename)
 
         # call requested command
-        command = self.commands[self.args.command](self)
+        command = self.commands[self.args.command]
         try:
             command.run()
         except Exception as e:
