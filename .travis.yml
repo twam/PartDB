@@ -15,6 +15,6 @@ install:
 
 script:
   # Run all unit tests
-  - python -m unittest discover -p "*.py" -s Tests -t .
+  - python -m unittest discover
   # Check for formatting corresponding to PEP8
   - autopep8 -dr .
