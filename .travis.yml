@@ -15,7 +15,7 @@ install:
 
 script:
   # Run all unit tests
-  - coverage run -m unittest discover
+  - coverage run --source=. --branch -m unittest discover
   # Check for formatting corresponding to PEP8
   - autopep8 -dr .
 

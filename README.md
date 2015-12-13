@@ -1,6 +1,7 @@
 # PartDB
 
 [![Travis](http://img.shields.io/travis/twam/PartDB/master.svg)](https://travis-ci.org/twam/PartDB/)
+[![Coveralls](https://img.shields.io/coveralls/twam/PartDB.svg)](https://coveralls.io/github/twam/PartDB)
 [![GitHub license](https://img.shields.io/github/license/twam/PartDB.svg)]()
 
 PartDB is a tool written in Python to maintain a small database in the style of

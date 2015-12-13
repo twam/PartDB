@@ -109,10 +109,9 @@ class PartDB:
             command.run()
         except Exception as e:
             if (len(e.args) > 0):
-                print(e.args[0], file=sys.stderr)
+                sys.exit(e.args[0])
             else:
-                print("Unknown error.", file=sys.stderr)
-            sys.exit(-1)
+                sys.exit("Unknown error.")
 
 if __name__ == '__main__':
     PartDB(sys.argv).run()
