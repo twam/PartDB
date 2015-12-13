@@ -54,7 +54,7 @@ class Database:
 
         # add timestamps
         partData['timestampCreated'] = time.time()
-        partData['timestampLastModified'] = time.time()
+        partData['timestampLastModified'] = partData['timestampCreated']
 
         self.persistentDict[partKey] = partData
 
