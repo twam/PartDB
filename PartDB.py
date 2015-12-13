@@ -58,10 +58,10 @@ class PartDB:
 
         self.args = parser.parse_args(self.argv[1:])
 
-    def displayList(self, data):
+    def displayList(self, data, showKeys=False):
         COLUMNS = [
             {
-                "label": "PartNumber",
+                "label": "Part Number",
                 "data": "manufacturerPartNumber",
                 "width": 20,
                 "formatter": "s"},
@@ -75,8 +75,14 @@ class PartDB:
                 "data": "quantity",
                 "width": 10,
                 "formatter": "u"},
-
         ]
+
+        if showKeys == True:
+            COLUMNS.insert(0, {
+                "label": "ID",
+                "data": "key",
+                "width": 36,
+                "formatter": "s"})
 
         # Header
         print(" | ".join(["%-*s" % (column['width'], column['label'][:column['width']])
@@ -86,7 +92,7 @@ class PartDB:
         # Data
         for key, value in data.items():
             print(" | ".join([("%-*" + column['formatter']) %
-                              (column['width'], value[column['data']][:column['width']] if type(value[column['data']]) == str else value[column['data']]) for column in COLUMNS]))
+                              (column['width'], key if column['data'] == 'key' else value[column['data']][:column['width']] if type(value[column['data']]) == str else value[column['data']]) for column in COLUMNS]))
 
         # Footer
         print("-|-".join(["-" * (column['width']) for column in COLUMNS]))
@@ -99,7 +105,14 @@ class PartDB:
 
         # call requested command
         command = self.commands[self.args.command](self)
-        command.run()
+        try:
+            command.run()
+        except Exception as e:
+            if (len(e.args) > 0):
+                print(e.args[0], file=sys.stderr)
+            else:
+                print("Unknown error.", file=sys.stderr)
+            sys.exit(-1)
 
 if __name__ == '__main__':
     PartDB(sys.argv).run()

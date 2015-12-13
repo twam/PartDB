@@ -30,6 +30,9 @@ class Database:
     def __del__(self):
         self.persistentDict.close()
 
+    def __contains__(self, key):
+        return key in self.persistentDict
+
     def addDefaults(self, d):
         for key, value in self.KEYS.items():
             d.setdefault(key, value['default'])
