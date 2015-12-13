@@ -1,5 +1,8 @@
 # PartDB
 
+[![Travis](http://img.shields.io/travis/twam/PartDB/master.svg)](https://travis-ci.org/twam/PartDB/)
+[![GitHub license](https://img.shields.io/github/license/twam/PartDB.svg)]()
+
 PartDB is a tool written in Python to maintain a small database in the style of
 a JSON file of your (electronic) parts. It is meant to be simple and not
 optimized for huge amounts of data.
