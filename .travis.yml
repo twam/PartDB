@@ -1,0 +1,20 @@
+sudo: false
+
+language: python
+
+python:
+  - "3.2"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+
+install:
+  - pip install --upgrade pip
+  - pip install -r requirements.txt
+  - pip install autopep8
+
+script:
+  # Run all unit tests
+  - python -m unittest discover -p "*.py" -s Tests -t .
+  # Check for formatting corresponding to PEP8
+  - autopep8 -dr .
