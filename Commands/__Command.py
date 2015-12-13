@@ -9,7 +9,8 @@ class Command():
 
     @staticmethod
     def configureArgumentSubParser(subparser):
-        subparser.add_argument("-h", "--help", action="help", help="Show this help message and exit.")
+        subparser.add_argument("-h", "--help", action="help",
+                               help="Show this help message and exit.")
 
     def run(self):
         raise Exception('Command not defined')

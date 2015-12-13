@@ -10,6 +10,10 @@ class List(Commands.__Command.Command):
     def getParserHelp():
         return "List all parts."
 
+    @staticmethod
+    def configureArgumentSubParser(subparser):
+        super(List, List).configureArgumentSubParser(subparser)
+
     def run(self):
         COLUMNS = [
             {

@@ -37,12 +37,17 @@ class PartDB:
 
         parser = argparse.ArgumentParser(
             description='PartDB', prog=self.progname, add_help=False)
-        parser.add_argument("-h", "--help", action="help", help="Show this help message and exit.")
+        parser.add_argument("-h", "--help", action="help",
+                            help="Show this help message and exit.")
 
-        parser.add_argument('-d', '--database', help='Specify database filename.', dest='databaseFilename', default='partdb.json')
+        parser.add_argument("-v", "--version", action="version",
+                            help="Show the version and exit.", version="0.1")
 
+        parser.add_argument('-d', '--database', help='Specify database filename.',
+                            dest='databaseFilename', default='partdb.json', metavar='database')
 
-        subparsers = parser.add_subparsers(help='Command to execute. See \'%s command -h\' for help on specific commands. The following commands are implemented:' % (self.progname), dest='command', metavar='command')
+        subparsers = parser.add_subparsers(
+            help='Command to execute. See \'%s command -h\' for help on specific commands. The following commands are implemented:' % (self.progname), dest='command', metavar='command')
         subparsers.required = True
 
         for commandName in sorted([key for key in self.commands.keys()]):
