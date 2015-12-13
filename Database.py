@@ -41,7 +41,7 @@ class Database:
 
     def query(self, orderBy='manufacturerPartNumber', filter=None, addDefaults=True):
         filteredDict = {k: self.addDefaults(copy.copy(v)) if addDefaults else copy.copy(
-            v) for k, v in self.persistentDict.items() if (filter(k) if filter != None else True)}
+            v) for k, v in self.persistentDict.items() if (filter(k, v) if filter != None else True)}
         return collections.OrderedDict(sorted(filteredDict.items(), key=lambda t: t[1][orderBy]))
 
     def add(self, val):
