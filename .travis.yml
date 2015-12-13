@@ -3,7 +3,6 @@ sudo: false
 language: python
 
 python:
-  - "3.2"
   - "3.3"
   - "3.4"
   - "3.5"
@@ -11,10 +10,14 @@ python:
 install:
   - pip install --upgrade pip
   - pip install -r requirements.txt
+  - pip install coveralls
   - pip install autopep8
 
 script:
   # Run all unit tests
-  - python -m unittest discover
+  - coverage run -m unittest discover
   # Check for formatting corresponding to PEP8
   - autopep8 -dr .
+
+after_success:
+  coveralls
