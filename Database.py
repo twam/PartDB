@@ -7,14 +7,19 @@ import time
 
 class Database:
     KEYS = {
-        'manufacturerPartNumber': {'type': str, 'default': ''},
-        'manufacturerName': {'type': str, 'default': ''},
-        'description': {'type': str, 'default': ''},
-        'quantity': {'type': int, 'default': 0},
-        'distributor': {'type': dict, 'default': {}},
-        'datasheetURL': {'type': str, 'default': ''},
-        'timestampCreated': {'type': float, 'default': 0.0},
-        'timestampLastModified': {'type': float, 'default': 0.0},
+        'manufacturerPartNumber': {'type': str, 'default': '', 'help': 'Part number specified by the manufacturer.', 'argument': '-p'},
+        'manufacturerName': {'type': str, 'default': '', 'help': 'Name of the manufacturer.', 'argument': None},
+        'description': {'type': str, 'default': '', 'help': 'Description of the part.', 'argument': '-d'},
+        'quantity': {'type': int, 'default': 0, 'help': 'Quantity available.', 'argument': '-q'},
+        'distributor': {'type': dict, 'default': {}, 'help': 'Distributor information.'},
+        'datasheetURL': {'type': str, 'default': '', 'help': 'URL to datasheet.', 'argument': None},
+        'timestampCreated': {'type': float, 'default': 0.0, 'help': 'Time of entry creation.'},
+        'timestampLastModified': {'type': float, 'default': 0.0, 'help': 'Time of last update.'},
+    }
+
+    KEYS_DISTRIBUTOR = {
+        'distributorPartNumber': {'type': str, 'default': '', 'help': 'Part number specified by the distributor.', 'argument': None},
+        'distributorName': {'type': str, 'default': '', 'help': 'Name of the distributor.', 'argument': None}
     }
 
     def __init__(self, filename):
