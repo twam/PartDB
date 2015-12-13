@@ -14,7 +14,7 @@ class Add(Commands.__Command.Command):
 
     @staticmethod
     def configureArgumentSubParser(subparser):
-        super(Add, Add).configureArgumentSubParser(subparser)
+        super(__class__, Add).configureArgumentSubParser(subparser)
 
         for key, val in Database.Database.KEYS.items():
             if 'argument' in val:

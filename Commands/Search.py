@@ -13,7 +13,7 @@ class Search(Commands.__Command.Command):
 
     @staticmethod
     def configureArgumentSubParser(subparser):
-        super(Search, Search).configureArgumentSubParser(subparser)
+        super(__class__, Search).configureArgumentSubParser(subparser)
         subparser.add_argument('pattern', type=str,
                                help='Pattern to search for.')
         subparser.add_argument(

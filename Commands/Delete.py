@@ -12,7 +12,7 @@ class Delete(Commands.__Command.Command):
 
     @staticmethod
     def configureArgumentSubParser(subparser):
-        super(Delete, Delete).configureArgumentSubParser(subparser)
+        super(__class__, Delete).configureArgumentSubParser(subparser)
 
         subparser.add_argument('key', type=str, help='Database key to delete.')
 

@@ -159,3 +159,14 @@ class DatabaseTests(unittest.TestCase):
     def testUpdateFail(self):
         with self.assertRaises(Exception):
             self.db.update(str(uuid.uuid4()), self.TESTENTRY1)
+
+    def testContainsTrue(self):
+        self.db.add(self.TESTENTRY1)
+
+        # get key of test entry
+        partKey = list(self.db.raw().keys())[0]
+
+        self.assertTrue(partKey in self.db)
+
+    def testContainsFails(self):
+        self.assertTrue(str(uuid.uuid4()))

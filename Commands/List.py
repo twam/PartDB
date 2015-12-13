@@ -12,7 +12,7 @@ class List(Commands.__Command.Command):
 
     @staticmethod
     def configureArgumentSubParser(subparser):
-        super(List, List).configureArgumentSubParser(subparser)
+        super(__class__, List).configureArgumentSubParser(subparser)
         subparser.add_argument('-o', '--order-by', help='Order results by a specific field.',
                                dest='orderBy', metavar='order-by', default='manufacturerPartNumber')
         subparser.add_argument('-k', '--keys', help='Show database keys for results',
