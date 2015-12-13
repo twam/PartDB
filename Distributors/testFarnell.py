@@ -1,17 +1,12 @@
 import unittest
 import unittest.mock
-import Distributors.Mouser
+import Distributors.Farnell
 import PartDB
 
 
-class MouserTests(unittest.TestCase):
+class FarnellTests(unittest.TestCase):
     DISTRIBUTORPARTNUMBERS_VALID = [
-        '771-LM75BD118',
-        '739-BMIS-202-F',
-        '963-JMK325ABJ227MM-T',
-        '960-IAA.01.121111',
-        '71-CRCW0603-86.6K-E3',
-        '70-IHLP4040DZERR56M0'
+        '2302279',
     ]
 
     DISTRIBUTORPARTNUMBERS_INVALID = [
@@ -25,7 +20,12 @@ class MouserTests(unittest.TestCase):
         'TSOP34840-ND',  # Digikey PN
         'MAX214CWI+-ND',  # Digikey PN
         '206229100000010834647',  # Digikey Barcode
-        '2302279', # Farnell PN
+        '771-LM75BD118', # Mouser PN
+        '739-BMIS-202-F', # Mouser PN
+        '963-JMK325ABJ227MM-T', # Mouser PN
+        '960-IAA.01.121111', # Mouser PN
+        '71-CRCW0603-86.6K-E3', # Mouser PN
+        '70-IHLP4040DZERR56M0', # Mouser PN
     ]
 
     BARCODE_VALID = [
@@ -38,25 +38,25 @@ class MouserTests(unittest.TestCase):
 
     def setUp(self):
         self.partDB = unittest.mock.MagicMock(spec={PartDB.PartDB})
-        self.mouser = Distributors.Mouser.Mouser(self.partDB)
+        self.farnell = Distributors.Farnell.Farnell(self.partDB)
 
     def testMatchPartNumberValid(self):
         for distributorPartNumber in self.DISTRIBUTORPARTNUMBERS_VALID:
             # only test if part number was matched, not the actual data
             # returned
-            self.assertNotEqual(self.mouser.matchPartNumber(
+            self.assertNotEqual(self.farnell.matchPartNumber(
                 distributorPartNumber), None)
 
     def testMatchPartNumberInvalid(self):
         for distributorPartNumber in self.DISTRIBUTORPARTNUMBERS_INVALID:
-            self.assertEqual(self.mouser.matchPartNumber(
+            self.assertEqual(self.farnell.matchPartNumber(
                 distributorPartNumber), None)
 
     def testMatchBarcodeValid(self):
         for barcode in self.BARCODE_VALID:
             # only test if barcode was matched, not the actual data returned
-            self.assertNotEqual(self.mouser.matchBarcode(barcode), None)
+            self.assertNotEqual(self.farnell.matchBarcode(barcode), None)
 
     def testMatchBarcodeInvalid(self):
         for barcode in self.BARCODE_INVALID:
-            self.assertEqual(self.mouser.matchBarcode(barcode), None)
+            self.assertEqual(self.farnell.matchBarcode(barcode), None)

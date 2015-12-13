@@ -17,8 +17,14 @@ class DigikeyTests(unittest.TestCase):
 
     DISTRIBUTORPARTNUMBERS_INVALID = [
         '',
+        '2302279', # Farnell PN
+        '206229100000010834647'  # Digikey Barcode
         '771-LM75BD118', # Mouser PN
-        '206229100000010834647' # Digikey Barcode
+        '739-BMIS-202-F', # Mouser PN
+        '963-JMK325ABJ227MM-T', # Mouser PN
+        '960-IAA.01.121111', # Mouser PN
+        '71-CRCW0603-86.6K-E3', # Mouser PN
+        '70-IHLP4040DZERR56M0' # Mouser PN
     ]
 
     BARCODE_VALID = [
@@ -26,7 +32,7 @@ class DigikeyTests(unittest.TestCase):
     ]
 
     BARCODE_INVALID = [
-        '497-5225-1-ND' # Digikey PN
+        '497-5225-1-ND'  # Digikey PN
         ''
     ]
 
