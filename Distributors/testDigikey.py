@@ -36,9 +36,11 @@ class DigikeyTests(unittest.TestCase):
 
     BARCODE_INVALID = [
         '497-5225-1-ND',  # Digikey PN
-        b'>[)>06\x1dK9585766\x1d14K005\x1d1PLM75BD,118\x1dQ10\x1d11K039518665\x1d4LTH', # Mouser barcode with mfg p/n
-        b'>[)>06\x1dK9585766\x1d14K004\x1d1PJMK325ABJ227MM-T\x1dQ2\x1d11K039518665\x1d4LJP', 
-        b'>[)>06\x1dK8501032\x1d14K019\x1dPBTTF\x1dQ5\x1d11K037426481\x1d4LIL', # Mouser barcode with cust p/n
+        # Mouser barcode with mfg p/n
+        b'>[)>06\x1dK9585766\x1d14K005\x1d1PLM75BD,118\x1dQ10\x1d11K039518665\x1d4LTH',
+        b'>[)>06\x1dK9585766\x1d14K004\x1d1PJMK325ABJ227MM-T\x1dQ2\x1d11K039518665\x1d4LJP',
+        # Mouser barcode with cust p/n
+        b'>[)>06\x1dK8501032\x1d14K019\x1dPBTTF\x1dQ5\x1d11K037426481\x1d4LIL',
         ''
     ]
 

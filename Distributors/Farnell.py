@@ -16,7 +16,7 @@ class Farnell(Distributors.__Distributor.Distributor):
             br'^(?P<distributorPartNumber>\d{7})$', data)
         if matches:
             result = copy.copy(matches.groupdict())
-            for key,val in result.items():
+            for key, val in result.items():
                 result[key] = val.decode('utf_8')
             return result
         else:

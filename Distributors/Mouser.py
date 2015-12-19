@@ -18,7 +18,7 @@ class Mouser(Distributors.__Distributor.Distributor):
             br'^(?P<distributorPartNumber>\d{2,3}-([-A-Z0-9.]+?(?<!-ND)))$', data)
         if matches:
             result = copy.copy(matches.groupdict())
-            for key,val in result.items():
+            for key, val in result.items():
                 result[key] = val.decode('utf_8')
             return result
         else:
@@ -31,7 +31,8 @@ class Mouser(Distributors.__Distributor.Distributor):
         matches = re.search(
             br'^>\[\)>(06)(\x1d[0-9]{0,2}[KPQL][-A-Z0-9,]+)+$', data)
         if matches:
-            groups = re.findall(br'(\x1d)([0-9]{0,2})([KPQL])([-A-Z0-9,]+)', data)
+            groups = re.findall(
+                br'(\x1d)([0-9]{0,2})([KPQL])([-A-Z0-9,]+)', data)
             result = {}
             for group in groups:
                 if group[1] == b'1' and group[2] == b'P':
@@ -46,8 +47,10 @@ class Mouser(Distributors.__Distributor.Distributor):
 
         data = None
 
-        url = "http://www.mouser.com/Search/Refine.aspx?Keyword={}".format(distributorPartNumber)
-        req = urllib.request.Request(url, headers={'User-Agent' : "electronic-parser"})
+        url = "http://www.mouser.com/Search/Refine.aspx?Keyword={}".format(
+            distributorPartNumber)
+        req = urllib.request.Request(
+            url, headers={'User-Agent': "electronic-parser"})
         page = urllib.request.urlopen(req)
         soup = bs4.BeautifulSoup(page.read(), 'html.parser')
 

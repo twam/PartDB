@@ -18,7 +18,7 @@ class Digikey(Distributors.__Distributor.Distributor):
             br'^(?P<distributorPartNumber>[-+A-Z0-9]+-ND)$', data)
         if matches:
             result = copy.copy(matches.groupdict())
-            for key,val in result.items():
+            for key, val in result.items():
                 result[key] = val.decode('utf_8')
             return result
         else:
@@ -32,7 +32,7 @@ class Digikey(Distributors.__Distributor.Distributor):
             br'^(?P<distributorPartId>\d{7})(?P<quantity>\d{9})(\d{6})$', data)
         if matches:
             result = copy.copy(matches.groupdict())
-            for key,val in result.items():
+            for key, val in result.items():
                 result[key] = val.decode('utf_8')
             result['quantity'] = int(result['quantity'])
             return result
@@ -42,8 +42,10 @@ class Digikey(Distributors.__Distributor.Distributor):
     def getData(self, distributorPartNumber):
         data = None
 
-        url = "http://search.digikey.com/scripts/DkSearch/dksus.dll?Detail&name={}".format(distributorPartNumber)
-        req = urllib.request.Request(url, headers={'User-Agent' : "electronic-parser"})
+        url = "http://search.digikey.com/scripts/DkSearch/dksus.dll?Detail&name={}".format(
+            distributorPartNumber)
+        req = urllib.request.Request(
+            url, headers={'User-Agent': "electronic-parser"})
         page = urllib.request.urlopen(req)
         soup = bs4.BeautifulSoup(page.read(), 'html.parser')
 
@@ -77,4 +79,3 @@ class Digikey(Distributors.__Distributor.Distributor):
                     data['datasheetURL'] = val
 
         return data
-

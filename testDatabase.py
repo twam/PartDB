@@ -172,64 +172,64 @@ class DatabaseTests(unittest.TestCase):
         self.assertTrue(str(uuid.uuid4()))
 
     def testMergeDataBothEmpty(self):
-        dest={}
-        src={}
+        dest = {}
+        src = {}
 
         Database.mergeData(dest, src)
 
         self.assertEqual(dest, {})
 
     def testMergeDataDataOnlyInSrc(self):
-        dest={}
-        src={'a': 'A'}
+        dest = {}
+        src = {'a': 'A'}
 
         Database.mergeData(dest, src)
 
         self.assertEqual(dest, {'a': 'A'})
 
     def testMergeDataDataOnlyInDest(self):
-        dest={'a': 'A'}
-        src={}
+        dest = {'a': 'A'}
+        src = {}
 
         Database.mergeData(dest, src)
 
         self.assertEqual(dest, {'a': 'A'})
 
     def testMergeDataDataInBothNoOverride(self):
-        dest={'a': 'DEST'}
-        src={'a': 'SRC'}
+        dest = {'a': 'DEST'}
+        src = {'a': 'SRC'}
 
         Database.mergeData(dest, src, override=False)
 
         self.assertEqual(dest, {'a': 'DEST'})
 
     def testMergeDataDataInBothOverride(self):
-        dest={'a': 'DEST'}
-        src={'a': 'SRC'}
+        dest = {'a': 'DEST'}
+        src = {'a': 'SRC'}
 
         Database.mergeData(dest, src, override=True)
 
         self.assertEqual(dest, {'a': 'SRC'})
 
     def testMergeDataDictOnlyInSrc(self):
-        dest={}
-        src={'a': {'a1': 'A1'}}
+        dest = {}
+        src = {'a': {'a1': 'A1'}}
 
         Database.mergeData(dest, src)
 
         self.assertEqual(dest, {'a': {'a1': 'A1'}})
 
     def testMergeDataDictDataBothNoOverride(self):
-        dest={'a': {'a1': 'DEST'}}
-        src={'a': {'a1': 'SRC'}}
+        dest = {'a': {'a1': 'DEST'}}
+        src = {'a': {'a1': 'SRC'}}
 
         Database.mergeData(dest, src, override=False)
 
         self.assertEqual(dest, {'a': {'a1': 'DEST'}})
 
     def testMergeDataDictDataBothOverride(self):
-        dest={'a': {'a1': 'DEST'}}
-        src={'a': {'a1': 'SRC'}}
+        dest = {'a': {'a1': 'DEST'}}
+        src = {'a': {'a1': 'SRC'}}
 
         Database.mergeData(dest, src, override=True)
 

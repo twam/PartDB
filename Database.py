@@ -4,6 +4,7 @@ import copy
 import uuid
 import time
 
+
 def mergeData(dest, src, override=False):
     '''Merges all data from src into dst. If override is True already available data is overridden'''
     for key, val in src.items():
@@ -11,6 +12,7 @@ def mergeData(dest, src, override=False):
             dest[key] = val
         elif (key in dest) and (type(dest[key]) == dict):
             mergeData(dest[key], val, override=override)
+
 
 class Database:
     KEYS = {
