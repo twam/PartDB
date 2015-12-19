@@ -20,12 +20,12 @@ class FarnellTests(unittest.TestCase):
         'TSOP34840-ND',  # Digikey PN
         'MAX214CWI+-ND',  # Digikey PN
         '206229100000010834647',  # Digikey Barcode
-        '771-LM75BD118', # Mouser PN
-        '739-BMIS-202-F', # Mouser PN
-        '963-JMK325ABJ227MM-T', # Mouser PN
-        '960-IAA.01.121111', # Mouser PN
-        '71-CRCW0603-86.6K-E3', # Mouser PN
-        '70-IHLP4040DZERR56M0', # Mouser PN
+        '771-LM75BD118',  # Mouser PN
+        '739-BMIS-202-F',  # Mouser PN
+        '963-JMK325ABJ227MM-T',  # Mouser PN
+        '960-IAA.01.121111',  # Mouser PN
+        '71-CRCW0603-86.6K-E3',  # Mouser PN
+        '70-IHLP4040DZERR56M0',  # Mouser PN
     ]
 
     BARCODE_VALID = [
@@ -52,11 +52,11 @@ class FarnellTests(unittest.TestCase):
             self.assertEqual(self.farnell.matchPartNumber(
                 distributorPartNumber), None)
 
-    def testMatchBarcodeValid(self):
+    def testMatchBarCodeValid(self):
         for barcode in self.BARCODE_VALID:
             # only test if barcode was matched, not the actual data returned
-            self.assertNotEqual(self.farnell.matchBarcode(barcode), None)
+            self.assertNotEqual(self.farnell.matchBarCode(barcode), None)
 
-    def testMatchBarcodeInvalid(self):
+    def testMatchBarCodeInvalid(self):
         for barcode in self.BARCODE_INVALID:
-            self.assertEqual(self.farnell.matchBarcode(barcode), None)
+            self.assertEqual(self.farnell.matchBarCode(barcode), None)

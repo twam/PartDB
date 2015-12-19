@@ -6,6 +6,7 @@ import importlib
 import inspect
 import re
 import os
+import traceback
 import Database
 
 
@@ -54,11 +55,17 @@ class PartDB:
         parser.add_argument("-h", "--help", action="help",
                             help="Show this help message and exit.")
 
-        parser.add_argument("-v", "--version", action="version",
+        parser.add_argument("--version", action="version",
                             help="Show the version and exit.", version="0.1")
+
+        parser.add_argument("-v", "--verbose", action="store_true", dest="verbose",
+                            help="Be verbose.")
 
         parser.add_argument('-d', '--database', help='Specify database filename.',
                             dest='databaseFilename', default='partdb.json', metavar='database')
+
+        parser.add_argument('--debug', help='print debug information',
+                            dest='debug', action='store_true')
 
         subparsers = parser.add_subparsers(
             help='Command to execute. See \'%s command -h\' for help on specific commands. The following commands are implemented:' % (self.progname), dest='command', metavar='command')
@@ -122,10 +129,12 @@ class PartDB:
         try:
             command.run()
         except Exception as e:
+            if (self.args.debug):
+                traceback.print_exc()
             if (len(e.args) > 0):
                 sys.exit(e.args[0])
             else:
-                sys.exit("Unknown error.")
+                sys.exit("Unknown error: %s" % sys.exc_info()[0])
 
 if __name__ == '__main__':
     PartDB(sys.argv).run()

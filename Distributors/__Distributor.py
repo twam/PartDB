@@ -9,5 +9,8 @@ class Distributor:
     def matchPartNumber(self, data):
         return None
 
-    def matchBarcode(self, data):
+    def matchBarCode(self, data):
+        return None
+
+    def getData(self, distributorPartNumber):
         return None

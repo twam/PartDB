@@ -25,10 +25,13 @@ class MouserTests(unittest.TestCase):
         'TSOP34840-ND',  # Digikey PN
         'MAX214CWI+-ND',  # Digikey PN
         '206229100000010834647',  # Digikey Barcode
-        '2302279', # Farnell PN
+        '2302279',  # Farnell PN
     ]
 
     BARCODE_VALID = [
+        b'>[)>06\x1dK9585766\x1d14K005\x1d1PLM75BD,118\x1dQ10\x1d11K039518665\x1d4LTH', # Mouser barcode with mfg p/n
+        b'>[)>06\x1dK9585766\x1d14K004\x1d1PJMK325ABJ227MM-T\x1dQ2\x1d11K039518665\x1d4LJP', 
+        b'>[)>06\x1dK8501032\x1d14K019\x1dPBTTF\x1dQ5\x1d11K037426481\x1d4LIL', # Mouser barcode with cust p/n
     ]
 
     BARCODE_INVALID = [
@@ -52,11 +55,11 @@ class MouserTests(unittest.TestCase):
             self.assertEqual(self.mouser.matchPartNumber(
                 distributorPartNumber), None)
 
-    def testMatchBarcodeValid(self):
+    def testMatchBarCodeValid(self):
         for barcode in self.BARCODE_VALID:
             # only test if barcode was matched, not the actual data returned
-            self.assertNotEqual(self.mouser.matchBarcode(barcode), None)
+            self.assertNotEqual(self.mouser.matchBarCode(barcode), None)
 
-    def testMatchBarcodeInvalid(self):
+    def testMatchBarCodeInvalid(self):
         for barcode in self.BARCODE_INVALID:
-            self.assertEqual(self.mouser.matchBarcode(barcode), None)
+            self.assertEqual(self.mouser.matchBarCode(barcode), None)
