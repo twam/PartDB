@@ -118,6 +118,18 @@ class PartDB:
         # Footer
         print("-|-".join(["-" * (column['width']) for column in COLUMNS]))
 
+    def displayItem(self, data, showKey=False):
+        print("--- General ---")
+        for key, val in data.items():
+            if key != 'distributor':
+                print("%-30s: %s" % (key, val))
+
+        if 'distributor' in data:
+            for key, val in data['distributor'].items():
+                print("--- Distributor: %s ---" % (key))
+                for key2, val2 in val.items():
+                    print("%-30s: %s" % (key2, val2))
+
     def run(self):
         self.parseArguments()
 

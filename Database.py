@@ -70,6 +70,8 @@ class Database:
 
         self.persistentDict[partKey] = partData
 
+        return partKey
+
     def update(self, partKey, val):
         # check if key is existent
         if partKey not in self.persistentDict:

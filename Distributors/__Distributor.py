@@ -4,7 +4,7 @@ class Distributor:
         self.partDB = partDB
 
     def name(self):
-        return self.__class__.__name__
+        return self.__class__.__name__.lower()
 
     def matchPartNumber(self, data):
         return None

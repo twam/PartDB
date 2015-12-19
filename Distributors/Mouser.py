@@ -3,6 +3,7 @@ import re
 import copy
 import urllib.request
 import bs4
+import Database
 
 
 class Mouser(Distributors.__Distributor.Distributor):
@@ -17,9 +18,13 @@ class Mouser(Distributors.__Distributor.Distributor):
         matches = re.search(
             br'^(?P<distributorPartNumber>\d{2,3}-([-A-Z0-9.]+?(?<!-ND)))$', data)
         if matches:
-            result = copy.copy(matches.groupdict())
-            for key, val in result.items():
-                result[key] = val.decode('utf_8')
+            result = {}
+            result['distributor'] = {}
+            result['distributor'][self.name()] = {}
+            result['distributor'][self.name()]['distributorName'] = self.name()
+            result['distributor'][self.name()]['distributorPartNumber'] = matches.groupdict()[
+                'distributorPartNumber'].decode('ascii')
+
             return result
         else:
             return None
@@ -33,7 +38,12 @@ class Mouser(Distributors.__Distributor.Distributor):
         if matches:
             groups = re.findall(
                 br'(\x1d)([0-9]{0,2})([KPQL])([-A-Z0-9,]+)', data)
+
             result = {}
+            result['distributor'] = {}
+            result['distributor'][self.name()] = {}
+            result['distributor'][self.name()]['distributorName'] = self.name()
+
             for group in groups:
                 if group[1] == b'1' and group[2] == b'P':
                     result['manufacturerPartNumber'] = group[3].decode('utf_8')
@@ -43,12 +53,15 @@ class Mouser(Distributors.__Distributor.Distributor):
         else:
             return None
 
-    def getData(self, distributorPartNumber):
+    def getData(self, data):
+        newData = None
 
-        data = None
+        if 'distributorPartNumber' in data['distributor'][self.name()]:
+            url = "http://www.mouser.com/Search/Refine.aspx?Keyword={}".format(
+                data['distributor'][self.name()]['distributorPartNumber'])
+        else:
+            raise Exception('No valid key found to query for data!')
 
-        url = "http://www.mouser.com/Search/Refine.aspx?Keyword={}".format(
-            distributorPartNumber)
         req = urllib.request.Request(
             url, headers={'User-Agent': "electronic-parser"})
         page = urllib.request.urlopen(req)
@@ -56,15 +69,15 @@ class Mouser(Distributors.__Distributor.Distributor):
 
         # basic data
         productDesc = soup.find_all('div', id='product-desc')
-        data = {
+        newData = {
             "distributor": {
                 "mouser": {
                     "distributorName": "mouser",
-                    "distributorPartNumber": distributorPartNumber,
+                    "distributorPartNumber": productDesc[0].find_all('div', itemprop="model")[0].get_text().strip(),
                 }
             },
-            "manufacturerPartNumber": productDesc[0].find_all('div', itemprop="ProductID")[0].contents[1].contents[1].contents[0].strip(),
-            "description": productDesc[0].find_all('span', itemprop="description")[0].contents[1].contents[0].strip()
+            "manufacturerPartNumber": productDesc[0].find_all('div', itemprop="ProductID")[0].get_text().strip(),
+            "description": productDesc[0].find_all('span', itemprop="description")[0].get_text().strip()
         }
 
         # try to get some additional specs
@@ -76,8 +89,11 @@ class Mouser(Distributors.__Distributor.Distributor):
             val = cells[1].get_text().strip()
 
             if key == 'Manufacturer:':
-                data['manufacturerName'] = val
+                newData['manufacturerName'] = val
             elif key == 'Package/Case:':
-                data['footprint'] = val
+                newData['footprint'] = val
+
+        data = copy.copy(data)
+        Database.mergeData(data, newData)
 
         return data

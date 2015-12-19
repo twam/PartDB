@@ -50,8 +50,8 @@ class DigikeyTests(unittest.TestCase):
 
     def testMatchPartNumberValid(self):
         for distributorPartNumber in self.DISTRIBUTORPARTNUMBERS_VALID:
-            self.assertEqual(self.digikey.matchPartNumber(distributorPartNumber), {
-                             'distributorPartNumber': distributorPartNumber})
+            self.assertNotEqual(self.digikey.matchPartNumber(
+                distributorPartNumber), None)
 
     def testMatchPartNumberInvalid(self):
         for distributorPartNumber in self.DISTRIBUTORPARTNUMBERS_INVALID:
