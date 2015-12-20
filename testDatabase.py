@@ -200,14 +200,16 @@ class DatabaseTests(unittest.TestCase):
                          'manufacturerPartNumber'], 'C3')
 
     def testUpdate(self):
-        self.db.add(self.TESTENTRY1)
+        data = self.db.add(self.TESTENTRY1)
 
-        # get key of test entry
-        partKey = list(self.db.raw().keys())[0]
+        # change data
+        data['manufacturerPartNumber'] = 'A1+'
+        self.db.update(data)
 
-        self.db.update(partKey, self.TESTENTRY2)
+        # remove last timestampLastModified as this will differ
+        del data['timestampLastModified']
 
-        self.assertAEqualInBEntry(self.TESTENTRY2, self.db.raw()[partKey])
+        self.assertAEqualInBEntry(data, self.db.raw()[data['id']])
 
     def testUpdateFail(self):
         with self.assertRaises(Exception):

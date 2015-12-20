@@ -86,6 +86,14 @@ class Scan(__Command.Command):
 
         self.partDB.displayItem(data)
 
+        # Ask for quantity if not there
+        print('Quantity is %u. Scan/Enter new quantity or press return:' %
+              data['quantity'])
+        quantityInput = self.scanAndInput()
+        if quantityInput != b'':
+            data['quantity'] = int(quantityInput.decode('ascii'))
+            self.partDB.db.update(data)
+
     def handleScannedNonPartId(self, data):
         # search distributors
         distributorMatches = {}

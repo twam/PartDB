@@ -141,17 +141,17 @@ class Database:
 
         return partData
 
-    def update(self, id_, val):
+    def update(self, data):
         # check if key is existent
-        if id_ not in self.persistentDict:
-            raise Exception('ID \'%s\' not in database.' % (id_))
+        if data['id'] not in self.persistentDict:
+            raise Exception('ID \'%s\' not in database.' % (data['id']))
 
-        partData = copy.copy(val)
+        partData = copy.copy(data)
 
         # update timestamps
         partData['timestampLastModified'] = time.time()
 
-        self.persistentDict[id_] = partData
+        self.persistentDict[data['id']] = partData
 
     def delete(self, id_):
         # check if key is existent
