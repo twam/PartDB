@@ -18,11 +18,11 @@ class List(__Command.Command):
                                dest='orderBy',
                                metavar='order-by',
                                default='manufacturerPartNumber')
-        subparser.add_argument('-k', '--keys',
-                               help='Show database keys for results',
-                               dest='showKeys',
+        subparser.add_argument('--ids',
+                               help='Show database IDs for results',
+                               dest='showIds',
                                action='store_true')
 
     def run(self):
         self.partDB.displayList(self.partDB.db.query(
-            orderBy=self.partDB.args.orderBy), showKeys=self.partDB.args.showKeys)
+            orderBy=self.partDB.args.orderBy), showIds=self.partDB.args.showIds)

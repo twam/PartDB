@@ -45,10 +45,10 @@ class DatabaseTests(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testDisplayListWithoutKeys(self):
+    def testDisplayListWithoutIds(self):
         partDB = PartDB.PartDB('PartDB'.split(' '))
 
-        partDB.displayList(self.TESTENTRIES, showKeys=False)
+        partDB.displayList(self.TESTENTRIES, showIds=False)
 
         expected_output = [
             'Part Number          | Description                                        | Quantity  ',
@@ -64,10 +64,10 @@ class DatabaseTests(unittest.TestCase):
             self.assertEqual(call, call(expected_output[line]))
             line += 1
 
-    def testDisplayListWithKeys(self):
+    def testDisplayListWithIds(self):
         partDB = PartDB.PartDB('PartDB'.split(' '))
 
-        partDB.displayList(self.TESTENTRIES, showKeys=True)
+        partDB.displayList(self.TESTENTRIES, showIds=True)
 
         expected_output = [
             'ID                                   | Part Number          | Description                                        | Quantity  ',

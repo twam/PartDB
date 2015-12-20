@@ -23,7 +23,7 @@ class Label:
         conn.writeRequestData(data, len(data))
         conn.finishDocument(printer=printerName)
 
-    def createLabelFromData(self, key, data):
+    def createLabelFromData(self, data):
         self.zpl = zpl2.Zpl2(firmware='V45.11.7ZA')
 
         # label data
@@ -84,6 +84,9 @@ class Label:
         offsetY += sizeSmall + fieldSpacing
 
         self.zpl.printDataMatrixBarCode(
-            x=barCodePosX, y=barCodePosY, height=barCodeDotHeight, data=key)
+            x=barCodePosX,
+            y=barCodePosY,
+            height=barCodeDotHeight,
+            data=data['id'])
 
         self.zpl.EndFormat()

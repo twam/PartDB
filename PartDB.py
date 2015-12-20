@@ -79,7 +79,7 @@ class PartDB:
 
         self.args = parser.parse_args(self.argv[1:])
 
-    def displayList(self, data, showKeys=False):
+    def displayList(self, data, showIds=False):
         COLUMNS = [
             {
                 "label": "Part Number",
@@ -98,7 +98,7 @@ class PartDB:
                 "formatter": "u"},
         ]
 
-        if showKeys == True:
+        if showIds == True:
             COLUMNS.insert(0, {
                 "label": "ID",
                 "data": "key",
@@ -120,15 +120,18 @@ class PartDB:
 
     def displayItem(self, data, showKey=False):
         print("--- General ---")
-        for key, val in data.items():
+        for key in sorted(data.keys()):
             if key != 'distributor':
-                print("%-30s: %s" % (key, val))
+                print("%-30s: %s" % (key, data[key]))
 
         if 'distributor' in data:
-            for key, val in data['distributor'].items():
-                print("--- Distributor: %s ---" % (key))
-                for key2, val2 in val.items():
-                    print("%-30s: %s" % (key2, val2))
+            for distributorName in sorted(data['distributor'].keys()):
+                print("--- Distributor: %s ---" % (distributorName))
+                for key2 in sorted(data['distributor'][
+                                   distributorName].keys()):
+                    print(
+                        "%-30s: %s" %
+                        (key2, data['distributor'][distributorName][key2]))
 
     def run(self):
         self.parseArguments()

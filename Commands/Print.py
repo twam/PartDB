@@ -23,21 +23,21 @@ class Print(__Command.Command):
                                help="Name of printer to print on.",
                                default='zebra')
 
-        subparser.add_argument('key',
+        subparser.add_argument('id',
                                type=str,
                                help='Database key to print.')
 
     def run(self):
         result = self.partDB.db.query(
             filter=lambda k, v: (
-                k == self.partDB.args.key))
+                k == self.partDB.args.id))
         if len(result) > 0:
             label = Label.Label()
             label.createLabelFromData(
-                key=self.partDB.args.key, data=result[
-                    self.partDB.args.key])
+                key=self.partDB.args.id, data=result[
+                    self.partDB.args.id])
             label.cupsPrint(printerName=self.partDB.args.printerName)
         else:
             raise Exception(
-                'Key %s not found in database.' %
-                (self.partDB.args.key))
+                'ID %s not found in database.' %
+                (self.partDB.args.id))

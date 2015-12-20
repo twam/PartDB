@@ -17,7 +17,7 @@ def mergeData(dest, src, override=False):
 
 
 class Database:
-    KEYS = {
+    SCHEMA = {
         'manufacturerPartNumber': {
             'type': str,
             'default': '',
@@ -38,10 +38,38 @@ class Database:
             'default': 0,
             'help': 'Quantity available.',
             'argument': '-q'},
+        'footprint': {
+            'type': str,
+            'default': '',
+            'help': 'footprint of part',
+            'argument': None},
+        'manufacturerFootprint': {
+            'type': str,
+            'default': '',
+            'help': 'manufacturer specific name of footprint',
+            'argument': None},
         'distributor': {
             'type': dict,
             'default': {},
-            'help': 'Distributor information.'},
+            'help': 'Distributor information.',
+            'entries': {
+                'distributorPartId': {
+                    'type': str,
+                    'default': '',
+                    'help': 'Part ID specified by the distributor.',
+                    'argument': None},
+                'distributorPartNumber': {
+                    'type': str,
+                    'default': '',
+                    'help': 'Part number specified by the distributor.',
+                    'argument': None},
+                'distributorName': {
+                    'type': str,
+                    'default': '',
+                    'help': 'Name of the distributor.',
+                    'argument': None},
+            }
+        },
         'datasheetURL': {
             'type': str,
             'default': '',
@@ -57,18 +85,7 @@ class Database:
             'help': 'Time of last update.'},
     }
 
-    KEYS_DISTRIBUTOR = {
-        'distributorPartNumber': {
-            'type': str,
-            'default': '',
-            'help': 'Part number specified by the distributor.',
-            'argument': None},
-        'distributorName': {
-            'type': str,
-            'default': '',
-            'help': 'Name of the distributor.',
-            'argument': None}
-    }
+    KEYS_DISTRIBUTOR = SCHEMA['distributor']['entries']
 
     def __init__(self, filename):
         self.filename = filename
@@ -82,23 +99,20 @@ class Database:
         return key in self.persistentDict
 
     def addDefaults(self, data):
-        for key, value in self.KEYS.items():
+        for key, value in self.SCHEMA.items():
             data.setdefault(key, value['default'])
 
         return data
 
-    def assureTypes(self, data):
+    def assureTypes(self, data, schema=SCHEMA):
         for key in data:
-            if key in self.KEYS and type(data[key] != self.KEYS[key]['type']):
-                data[key] = self.KEYS[key]['type'](data[key])
+            if ((key in schema) and
+                    (not isinstance(data[key], schema[key]['type']))):
+                data[key] = schema[key]['type'](data[key])
 
-        if 'distributor' in data:
-            for distributor in data['distributor']:
-                for key in data['distributor'][distributor]:
-                    if ((key in self.KEYS_DISTRIBUTOR) and
-                            (type(data['distributor'][distributor][key] != self.KEYS_DISTRIBUTOR[key]['type']))):
-                        data['distributor'][distributor][key] = self.KEYS_DISTRIBUTOR[
-                            key]['type'](data['distributor'][distributor][key])
+            if 'entries' in schema[key]:
+                for key2 in data[key]:
+                    self.assureTypes(data[key][key2], schema[key]['entries'])
 
     def raw(self):
         return self.persistentDict
@@ -112,35 +126,36 @@ class Database:
 
     def add(self, val):
         # create key for part and make sure that is not already preset
-        partKey = None
-        while (partKey is None) or (partKey in self.persistentDict):
-            partKey = str(uuid.uuid4())
+        id_ = None
+        while (id_ is None) or (id_ in self.persistentDict):
+            id_ = str(uuid.uuid4())
 
         partData = copy.copy(val)
 
         # add timestamps
         partData['timestampCreated'] = time.time()
         partData['timestampLastModified'] = partData['timestampCreated']
+        partData['id'] = id_
 
-        self.persistentDict[partKey] = partData
+        self.persistentDict[id_] = partData
 
-        return partKey
+        return partData
 
-    def update(self, partKey, val):
+    def update(self, id_, val):
         # check if key is existent
-        if partKey not in self.persistentDict:
-            raise Exception('Key \'%s\' not in database.' % (partKey))
+        if id_ not in self.persistentDict:
+            raise Exception('ID \'%s\' not in database.' % (id_))
 
         partData = copy.copy(val)
 
         # update timestamps
         partData['timestampLastModified'] = time.time()
 
-        self.persistentDict[partKey] = partData
+        self.persistentDict[id_] = partData
 
-    def delete(self, partKey):
+    def delete(self, id_):
         # check if key is existent
-        if partKey not in self.persistentDict:
-            raise Exception('Key \'%s\' not in database.' % (partKey))
+        if id_ not in self.persistentDict:
+            raise Exception('ID \'%s\' not in database.' % (id_))
 
-        del self.persistentDict[partKey]
+        del self.persistentDict[id_]

@@ -35,9 +35,13 @@ class Search(__Command.Command):
                                dest='orderBy',
                                metavar='order-by',
                                default='manufacturerPartNumber')
-        subparser.add_argument('-k', '--keys',
-                               help='Show database keys for results',
-                               dest='showKeys',
+        subparser.add_argument('--ids',
+                               help='Show database IDs for results',
+                               dest='showIds',
+                               action='store_true')
+        subparser.add_argument('--detail',
+                               help='Show results in detailed form',
+                               dest='showDetail',
                                action='store_true')
 
     def __query_filter(self, key, val):
@@ -51,5 +55,13 @@ class Search(__Command.Command):
         return False
 
     def run(self):
-        self.partDB.displayList(self.partDB.db.query(
-            filter=self.__query_filter, orderBy=self.partDB.args.orderBy), showKeys=self.partDB.args.showKeys)
+        result = self.partDB.db.query(
+            filter=self.__query_filter,
+            orderBy=self.partDB.args.orderBy)
+
+        if (self.partDB.args.showDetail):
+            for id_, data in result.items():
+                self.partDB.displayItem(data)
+                print('')
+        else:
+            self.partDB.displayList(result, showIds=self.partDB.args.showIds)

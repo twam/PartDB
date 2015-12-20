@@ -16,7 +16,7 @@ class Add(__Command.Command):
     def configureArgumentSubParser(subparser):
         super(__class__, Add).configureArgumentSubParser(subparser)
 
-        for key, val in Database.Database.KEYS.items():
+        for key, val in Database.Database.SCHEMA.items():
             if 'argument' in val:
                 subparser.add_argument(*[x for x in [val['argument'], '--%s' % (key)] if x is not None],
                                        dest=key,
@@ -38,7 +38,7 @@ class Add(__Command.Command):
     def run(self):
         partData = {}
 
-        for key, val in Database.Database.KEYS.items():
+        for key, val in Database.Database.SCHEMA.items():
             if 'argument' in val:
                 partData[key] = vars(self.partDB.args)[key]
 

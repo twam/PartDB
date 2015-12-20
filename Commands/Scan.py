@@ -162,12 +162,12 @@ class Scan(__Command.Command):
             raise Exception('Part already in DB!')
 
         # Add part to database
-        partKey = self.partDB.db.add(data)
-        print('Added with key %s.' % partKey)
+        data = self.partDB.db.add(data)
+        print('Added with key %s.' % data['id'])
 
         if (self.partDB.args.printLabel):
             label = Label.Label()
-            label.createLabelFromData(key=partKey, data=data)
+            label.createLabelFromData(data=data)
             label.cupsPrint(printerName=self.partDB.args.printerName)
 
     def run(self):
