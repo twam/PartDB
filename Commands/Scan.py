@@ -6,6 +6,7 @@ import serial
 import select
 import sys
 import re
+import copy
 
 
 class Scan(__Command.Command):
@@ -167,7 +168,13 @@ class Scan(__Command.Command):
         res = self.partDB.db.query(filter=lambda k, v: (
             v['manufacturerPartNumber'] == data['manufacturerPartNumber']))
         if len(res) > 0:
-            raise Exception('Part already in DB!')
+            id_ = (list(res.keys()))[0]
+            print('Part already found in database with ID %s. Adding quantity.' % id_)
+            oldData = copy.copy(res[id_])
+            oldData['quantity'] += data['quantity']
+
+            self.partDB.db.update(oldData)
+            return
 
         # Add part to database
         data = self.partDB.db.add(data)
