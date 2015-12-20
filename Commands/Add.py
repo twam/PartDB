@@ -1,9 +1,9 @@
-import Commands.__Command
+from . import __Command
 import Database
 import collections
 
 
-class Add(Commands.__Command.Command):
+class Add(__Command.Command):
 
     def __init__(self, partDB):
         super().__init__(partDB)
@@ -18,13 +18,22 @@ class Add(Commands.__Command.Command):
 
         for key, val in Database.Database.KEYS.items():
             if 'argument' in val:
-                subparser.add_argument(*[x for x in [val['argument'], '--%s' % (key)] if x != None],
-                                       dest=key, metavar=key, default=val['default'], type=val['type'], help=val['help'])
+                subparser.add_argument(*[x for x in [val['argument'], '--%s' % (key)] if x is not None],
+                                       dest=key,
+                                       metavar=key,
+                                       default=val['default'],
+                                       type=val['type'],
+                                       help=val['help'])
 
         for key, val in Database.Database.KEYS_DISTRIBUTOR.items():
             if 'argument' in val:
-                subparser.add_argument(*[x for x in [val['argument'], '--%s' % (key)] if x != None],
-                                       dest=key, metavar=key, default=[], type=val['type'], help=val['help'], action='append')
+                subparser.add_argument(*[x for x in [val['argument'], '--%s' % (key)] if x is not None],
+                                       dest=key,
+                                       metavar=key,
+                                       default=[],
+                                       type=val['type'],
+                                       help=val['help'],
+                                       action='append')
 
     def run(self):
         partData = {}

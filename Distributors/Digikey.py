@@ -1,4 +1,4 @@
-import Distributors.__Distributor
+from . import __Distributor
 import re
 import copy
 import bs4
@@ -6,13 +6,13 @@ import urllib
 import Database
 
 
-class Digikey(Distributors.__Distributor.Distributor):
+class Digikey(__Distributor.Distributor):
 
     def __init__(self, partDB):
         super().__init__(partDB)
 
     def matchPartNumber(self, data):
-        if type(data) == str:
+        if isinstance(data, str):
             data = data.encode('ascii')
 
         matches = re.search(
@@ -30,7 +30,7 @@ class Digikey(Distributors.__Distributor.Distributor):
             return None
 
     def matchBarCode(self, data):
-        if type(data) == str:
+        if isinstance(data, str):
             data = data.encode('ascii')
 
         matches = re.search(
@@ -42,7 +42,7 @@ class Digikey(Distributors.__Distributor.Distributor):
             result['distributor'][self.name()]['distributorName'] = self.name()
             result['distributor'][self.name()]['distributorPartId'] = matches.groupdict()[
                 'distributorPartId'].decode('ascii')
-            result['quantity'] = int(matches.groupdict()['quantity'])
+            result['quantity'] = matches.groupdict()['quantity']
 
             return result
         else:

@@ -50,15 +50,15 @@ class DatabaseTests(unittest.TestCase):
 
         partDB.displayList(self.TESTENTRIES, showKeys=False)
 
-        expected_output = '''
-            Part Number          | Description                                        | Quantity  
-            ---------------------|----------------------------------------------------|-----------
-            A1                   | Test Part 1                                        | 1         
-            B2                   | Test Part 2                                        | 2         
-            C3                   | Test Part 3                                        | 3         
-            ---------------------|----------------------------------------------------|-----------'''.split("\n            ")
+        expected_output = [
+            'Part Number          | Description                                        | Quantity  ',
+            '---------------------|----------------------------------------------------|-----------',
+            'A1                   | Test Part 1                                        | 1         ',
+            'B2                   | Test Part 2                                        | 2         ',
+            'C3                   | Test Part 3                                        | 3         ',
+            '---------------------|----------------------------------------------------|-----------']
 
-        line = 1
+        line = 0
         for call in self.mockPrint.call_args_list:
             self.assertTrue(line < len(expected_output))
             self.assertEqual(call, call(expected_output[line]))
@@ -69,15 +69,15 @@ class DatabaseTests(unittest.TestCase):
 
         partDB.displayList(self.TESTENTRIES, showKeys=True)
 
-        expected_output = '''
-            ID                                   | Part Number          | Description                                        | Quantity  
-            -------------------------------------|----------------------|----------------------------------------------------|-----------
-            11111111-1111-1111-1111-111111111111 | A1                   | Test Part 1                                        | 1         
-            22222222-2222-2222-2222-222222222222 | B2                   | Test Part 2                                        | 2         
-            33333333-3333-3333-3333-333333333333 | C3                   | Test Part 3                                        | 3         
-            -------------------------------------|----------------------|----------------------------------------------------|-----------'''.split("\n            ")
+        expected_output = [
+            'ID                                   | Part Number          | Description                                        | Quantity  ',
+            '-------------------------------------|----------------------|----------------------------------------------------|-----------',
+            '11111111-1111-1111-1111-111111111111 | A1                   | Test Part 1                                        | 1         ',
+            '22222222-2222-2222-2222-222222222222 | B2                   | Test Part 2                                        | 2         ',
+            '33333333-3333-3333-3333-333333333333 | C3                   | Test Part 3                                        | 3         ',
+            '-------------------------------------|----------------------|----------------------------------------------------|-----------']
 
-        line = 1
+        line = 0
         for call in self.mockPrint.call_args_list:
             self.assertTrue(line < len(expected_output))
             self.assertEqual(call, call(expected_output[line]))

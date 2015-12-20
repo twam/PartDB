@@ -1,12 +1,13 @@
-import Commands.__Command
+from . import __Command
 import Database
+import Label
 import collections
 import serial
 import select
 import sys
 
 
-class Scan(Commands.__Command.Command):
+class Scan(__Command.Command):
 
     def __init__(self, partDB):
         super().__init__(partDB)
@@ -19,17 +20,27 @@ class Scan(Commands.__Command.Command):
     def configureArgumentSubParser(subparser):
         super(__class__, Scan).configureArgumentSubParser(subparser)
 
-        subparser.add_argument('-d', '--device', dest='device',
-                               metavar='device', required=True, help='Device to scan from.')
+        subparser.add_argument('-d', '--device',
+                               dest='device',
+                               metavar='device',
+                               required=True,
+                               help='Device to scan from.')
 
-        subparser.add_argument('--confirm-quantity', dest='confirmQuantity',
-                               action='store_true', help='Confirm quantity before adding to database.')
+        subparser.add_argument('--confirm-quantity',
+                               dest='confirmQuantity',
+                               action='store_true',
+                               help='Confirm quantity before adding to database.')
 
-        subparser.add_argument('--print-label', dest='printLabel', action='store_true',
+        subparser.add_argument('--print-label',
+                               dest='printLabel',
+                               action='store_true',
                                help='Print label for item after adding to database.')
 
-        # subparser.add_argument('data', nargs='+', default=[],
-        #                        type=str, help='Scanned data.')
+        subparser.add_argument('--printer-name',
+                               dest='printerName',
+                               metavar='printer-name',
+                               help="Name of printer to print on.",
+                               default='zebra')
 
     def scan(self):
         ser = serial.Serial(self.partDB.args.device, timeout=0.05)
@@ -91,7 +102,8 @@ class Scan(Commands.__Command.Command):
         count = 0
         distributorName = None
         for key in sorted(distributorMatches.keys()):
-            if distributorMatches[key]['barCode'] or distributorMatches[key]['manufacturerPartNumber']:
+            if distributorMatches[key]['barCode'] or distributorMatches[
+                    key]['manufacturerPartNumber']:
                 count += 1
                 distributorName = key
 
@@ -114,6 +126,9 @@ class Scan(Commands.__Command.Command):
                                'manufacturerPartNumber'], override=True)
 
         data = self.partDB.distributors[distributorName].getData(data)
+
+        # Assure that all types are correct
+        self.partDB.db.assureTypes(data)
 
         # Ask for quantity if not there
         if 'quantity' not in data:
@@ -142,4 +157,6 @@ class Scan(Commands.__Command.Command):
         print('Added with key %s.' % partKey)
 
         if (self.partDB.args.printLabel):
-            print('Here a label should be printed. :P')
+            label = Label.Label()
+            label.createLabelFromData(key=partKey, data=data)
+            label.cupsPrint(printerName=self.partDB.args.printerName)

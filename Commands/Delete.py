@@ -1,7 +1,7 @@
-import Commands.__Command
+from . import __Command
 
 
-class Delete(Commands.__Command.Command):
+class Delete(__Command.Command):
 
     def __init__(self, partDB):
         super().__init__(partDB)
@@ -14,7 +14,9 @@ class Delete(Commands.__Command.Command):
     def configureArgumentSubParser(subparser):
         super(__class__, Delete).configureArgumentSubParser(subparser)
 
-        subparser.add_argument('key', type=str, help='Database key to delete.')
+        subparser.add_argument('key',
+                               type=str,
+                               help='Database key to delete.')
 
     def run(self):
         if self.partDB.args.key in self.partDB.db:

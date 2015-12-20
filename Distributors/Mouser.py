@@ -1,4 +1,4 @@
-import Distributors.__Distributor
+from . import __Distributor
 import re
 import copy
 import urllib.request
@@ -6,13 +6,24 @@ import bs4
 import Database
 
 
-class Mouser(Distributors.__Distributor.Distributor):
+class Mouser(__Distributor.Distributor):
+    GROUP_MAP = {
+        'K': None,  # Customer PO
+        '14K': None,  # Line Item
+        'P': None,  # Customer P/N
+        '1P': 'manufacturerPartNumber',  # Manufacturer P/N
+        '1T': None,  # Batch
+        'Q': 'quantity',  # Quantity
+        '10D': None,  # Date Code
+        'V': None,  # Supplier
+        '4L': None,  # Origin
+    }
 
     def __init__(self, partDB):
         super().__init__(partDB)
 
     def matchPartNumber(self, data):
-        if type(data) == str:
+        if isinstance(data, str):
             data = data.encode('ascii')
 
         matches = re.search(
@@ -30,25 +41,24 @@ class Mouser(Distributors.__Distributor.Distributor):
             return None
 
     def matchBarCode(self, data):
-        if type(data) == str:
+        if isinstance(data, str):
             data = data.encode('ascii')
 
-        matches = re.search(
-            br'^>\[\)>(06)(\x1d[0-9]{0,2}[KPQL][-A-Z0-9,]+)+$', data)
-        if matches:
-            groups = re.findall(
-                br'(\x1d)([0-9]{0,2})([KPQL])([-A-Z0-9,]+)', data)
-
+        if re.search(br'^>\[\)>(06)(\x1d[0-9]{0,2}[KPQL][-A-Z0-9,]+)+$', data):
             result = {}
             result['distributor'] = {}
             result['distributor'][self.name()] = {}
             result['distributor'][self.name()]['distributorName'] = self.name()
 
-            for group in groups:
-                if group[1] == b'1' and group[2] == b'P':
-                    result['manufacturerPartNumber'] = group[3].decode('utf_8')
-                elif group[1] == b'' and group[2] == b'Q':
-                    result['quantity'] = int(group[3].decode('ascii'))
+            pat = re.compile(
+                br'(\x1d)(?P<key>[0-9]{0,2}[A-Z])(?P<value>[-A-Z0-9,]+)')
+            for m in pat.finditer(data):
+                key = m.groupdict()['key'].decode('ascii')
+                value = m.groupdict()['value'].decode('ascii')
+
+                if (key in self.GROUP_MAP) and (self.GROUP_MAP[key] != None):
+                    result[self.GROUP_MAP[key]] = value
+
             return result
         else:
             return None
@@ -83,7 +93,8 @@ class Mouser(Distributors.__Distributor.Distributor):
         # try to get some additional specs
         specs = soup.find_all('div', id='specs')
 
-        for row in specs[0].find_all('tr', class_=lambda x: x == "odd" or x == "even"):
+        for row in specs[0].find_all(
+                'tr', class_=lambda x: x == "odd" or x == "even"):
             cells = row.find_all("td")
             key = cells[0].get_text().strip()
             val = cells[1].get_text().strip()

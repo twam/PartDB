@@ -113,7 +113,7 @@ class PartDB:
         # Data
         for key, value in data.items():
             print(" | ".join([("%-*" + column['formatter']) %
-                              (column['width'], key if column['data'] == 'key' else value[column['data']][:column['width']] if type(value[column['data']]) == str else value[column['data']]) for column in COLUMNS]))
+                              (column['width'], key if column['data'] == 'key' else value[column['data']][:column['width']] if isinstance(value[column['data']], str) else value[column['data']]) for column in COLUMNS]))
 
         # Footer
         print("-|-".join(["-" * (column['width']) for column in COLUMNS]))

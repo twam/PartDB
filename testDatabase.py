@@ -48,6 +48,59 @@ class DatabaseTests(unittest.TestCase):
             raise Exception('Test database %s was not written!' %
                             (self.TESTDATABASEFILENAME))
 
+    def testAssureTypesEmpty(self):
+        data = {}
+        self.db.assureTypes(data)
+        self.assertEqual({}, data)
+
+    def testAssureTypesCorrectTypes(self):
+        data = {'quantity': 5}
+        self.db.assureTypes(data)
+        self.assertEqual({'quantity': 5}, data)
+
+    def testAssureTypesIncorrectTypes(self):
+        data = {'quantity': '5'}
+        self.db.assureTypes(data)
+        self.assertEqual({'quantity': 5}, data)
+
+    def testAssureTypesCorrectTypesWithDistributor(self):
+        data = {
+            'quantity': 5,
+            'distributor': {
+                'digikey': {
+                    'distributorPartNumber': '5'
+                }
+            }
+        }
+        self.db.assureTypes(data)
+        self.assertEqual({
+            'quantity': 5,
+            'distributor': {
+                'digikey': {
+                    'distributorPartNumber': '5'
+                }
+            }
+        }, data)
+
+    def testAssureTypesIncorrectTypesWithDistributor(self):
+        data = {
+            'quantity': 5,
+            'distributor': {
+                'digikey': {
+                    'distributorPartNumber': 5
+                }
+            }
+        }
+        self.db.assureTypes(data)
+        self.assertEqual({
+            'quantity': 5,
+            'distributor': {
+                'digikey': {
+                    'distributorPartNumber': '5'
+                }
+            }
+        }, data)
+
     def testAdd(self):
         self.db.add(self.TESTENTRY1)
 

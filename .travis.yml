@@ -2,6 +2,11 @@ sudo: false
 
 language: python
 
+addons:
+  apt:
+    packages:
+      - libcups2-dev
+
 python:
   - "3.3"
   - "3.4"

@@ -1,15 +1,15 @@
-import Distributors.__Distributor
+from . import __Distributor
 import re
 import copy
 
 
-class Farnell(Distributors.__Distributor.Distributor):
+class Farnell(__Distributor.Distributor):
 
     def __init__(self, partDB):
         super().__init__(partDB)
 
     def matchPartNumber(self, data):
-        if type(data) == str:
+        if isinstance(data, str):
             data = data.encode('ascii')
 
         matches = re.search(

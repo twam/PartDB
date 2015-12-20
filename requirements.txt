@@ -1,3 +1,5 @@
 beautifulsoup4
 html5lib
 pyserial
+pycups
+pyzpl2

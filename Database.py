@@ -6,29 +6,68 @@ import time
 
 
 def mergeData(dest, src, override=False):
-    '''Merges all data from src into dst. If override is True already available data is overridden'''
+    '''Merges all data from src into dst. If override is True already
+        available data is overridden'''
     for key, val in src.items():
-        if ((key in dest) and (type(dest[key]) != dict) and (override == True)) or (key not in dest):
+        if ((key in dest) and (not isinstance(dest[key], dict)) and (
+                override == True)) or (key not in dest):
             dest[key] = val
-        elif (key in dest) and (type(dest[key]) == dict):
+        elif (key in dest) and (isinstance(dest[key], dict)):
             mergeData(dest[key], val, override=override)
 
 
 class Database:
     KEYS = {
-        'manufacturerPartNumber': {'type': str, 'default': '', 'help': 'Part number specified by the manufacturer.', 'argument': '-p'},
-        'manufacturerName': {'type': str, 'default': '', 'help': 'Name of the manufacturer.', 'argument': None},
-        'description': {'type': str, 'default': '', 'help': 'Description of the part.', 'argument': '-d'},
-        'quantity': {'type': int, 'default': 0, 'help': 'Quantity available.', 'argument': '-q'},
-        'distributor': {'type': dict, 'default': {}, 'help': 'Distributor information.'},
-        'datasheetURL': {'type': str, 'default': '', 'help': 'URL to datasheet.', 'argument': None},
-        'timestampCreated': {'type': float, 'default': 0.0, 'help': 'Time of entry creation.'},
-        'timestampLastModified': {'type': float, 'default': 0.0, 'help': 'Time of last update.'},
+        'manufacturerPartNumber': {
+            'type': str,
+            'default': '',
+            'help': 'Part number specified by the manufacturer.',
+            'argument': '-p'},
+        'manufacturerName': {
+            'type': str,
+            'default': '',
+            'help': 'Name of the manufacturer.',
+            'argument': None},
+        'description': {
+            'type': str,
+            'default': '',
+            'help': 'Description of the part.',
+            'argument': '-d'},
+        'quantity': {
+            'type': int,
+            'default': 0,
+            'help': 'Quantity available.',
+            'argument': '-q'},
+        'distributor': {
+            'type': dict,
+            'default': {},
+            'help': 'Distributor information.'},
+        'datasheetURL': {
+            'type': str,
+            'default': '',
+            'help': 'URL to datasheet.',
+            'argument': None},
+        'timestampCreated': {
+            'type': float,
+            'default': 0.0,
+            'help': 'Time of entry creation.'},
+        'timestampLastModified': {
+            'type': float,
+            'default': 0.0,
+            'help': 'Time of last update.'},
     }
 
     KEYS_DISTRIBUTOR = {
-        'distributorPartNumber': {'type': str, 'default': '', 'help': 'Part number specified by the distributor.', 'argument': None},
-        'distributorName': {'type': str, 'default': '', 'help': 'Name of the distributor.', 'argument': None}
+        'distributorPartNumber': {
+            'type': str,
+            'default': '',
+            'help': 'Part number specified by the distributor.',
+            'argument': None},
+        'distributorName': {
+            'type': str,
+            'default': '',
+            'help': 'Name of the distributor.',
+            'argument': None}
     }
 
     def __init__(self, filename):
@@ -42,24 +81,39 @@ class Database:
     def __contains__(self, key):
         return key in self.persistentDict
 
-    def addDefaults(self, d):
+    def addDefaults(self, data):
         for key, value in self.KEYS.items():
-            d.setdefault(key, value['default'])
+            data.setdefault(key, value['default'])
 
-        return d
+        return data
+
+    def assureTypes(self, data):
+        for key in data:
+            if key in self.KEYS and type(data[key] != self.KEYS[key]['type']):
+                data[key] = self.KEYS[key]['type'](data[key])
+
+        if 'distributor' in data:
+            for distributor in data['distributor']:
+                for key in data['distributor'][distributor]:
+                    if ((key in self.KEYS_DISTRIBUTOR) and
+                            (type(data['distributor'][distributor][key] != self.KEYS_DISTRIBUTOR[key]['type']))):
+                        data['distributor'][distributor][key] = self.KEYS_DISTRIBUTOR[
+                            key]['type'](data['distributor'][distributor][key])
 
     def raw(self):
         return self.persistentDict
 
-    def query(self, orderBy='manufacturerPartNumber', filter=None, addDefaults=True):
+    def query(self, orderBy='manufacturerPartNumber',
+              filter=None, addDefaults=True):
         filteredDict = {k: self.addDefaults(copy.copy(v)) if addDefaults else copy.copy(
-            v) for k, v in self.persistentDict.items() if (filter(k, v) if filter != None else True)}
-        return collections.OrderedDict(sorted(filteredDict.items(), key=lambda t: t[1][orderBy]))
+            v) for k, v in self.persistentDict.items() if (filter(k, v) if filter is not None else True)}
+        return collections.OrderedDict(
+            sorted(filteredDict.items(), key=lambda t: t[1][orderBy]))
 
     def add(self, val):
         # create key for part and make sure that is not already preset
         partKey = None
-        while (partKey == None) or (partKey in self.persistentDict):
+        while (partKey is None) or (partKey in self.persistentDict):
             partKey = str(uuid.uuid4())
 
         partData = copy.copy(val)
