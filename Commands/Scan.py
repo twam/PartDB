@@ -5,6 +5,7 @@ import collections
 import serial
 import select
 import sys
+import re
 
 
 class Scan(__Command.Command):
@@ -29,12 +30,12 @@ class Scan(__Command.Command):
         subparser.add_argument('--confirm-quantity',
                                dest='confirmQuantity',
                                action='store_true',
-                               help='Confirm quantity before adding to database.')
+                               help='Confirm quantity before adding item to database.')
 
         subparser.add_argument('--print-label',
                                dest='printLabel',
                                action='store_true',
-                               help='Print label for item after adding to database.')
+                               help='Print label for item after adding it to database.')
 
         subparser.add_argument('--printer-name',
                                dest='printerName',
@@ -73,11 +74,19 @@ class Scan(__Command.Command):
                 ser.close()
                 return serialData
 
-    def run(self):
-        print('Scan/Enter Barcode/PN:')
+    def handleScannedPartId(self, partId):
+        result = self.partDB.db.query(
+            filter=lambda k, v: (
+                k == partId))
 
-        data = self.scanAndInput()
+        if len(result) == 0:
+            raise Exception('Part ID %s not found in database.' % (partId))
 
+        data = result[partId]
+
+        self.partDB.displayItem(data)
+
+    def handleScannedNonPartId(self, data):
         # search distributors
         distributorMatches = {}
 
@@ -160,3 +169,14 @@ class Scan(__Command.Command):
             label = Label.Label()
             label.createLabelFromData(key=partKey, data=data)
             label.cupsPrint(printerName=self.partDB.args.printerName)
+
+    def run(self):
+        print('Scan/Enter Barcode/PN:')
+
+        data = self.scanAndInput()
+
+        if (re.match(
+                b'^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$', data)):
+            self.handleScannedPartId(data.decode('ascii'))
+        else:
+            self.handleScannedNonPartId(data)
