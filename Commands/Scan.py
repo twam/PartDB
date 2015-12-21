@@ -169,7 +169,9 @@ class Scan(__Command.Command):
             v['manufacturerPartNumber'] == data['manufacturerPartNumber']))
         if len(res) > 0:
             id_ = (list(res.keys()))[0]
-            print('Part already found in database with ID %s. Adding quantity.' % id_)
+            print(
+                'Part already found in database with ID %s. Adding quantity.' %
+                id_)
             oldData = copy.copy(res[id_])
             oldData['quantity'] += data['quantity']
 
