@@ -75,12 +75,15 @@ class Farnell(__Distributor.Distributor):
                 if attribute['attributeLabel'].strip(
                 ) == 'Alternate Case Style':
                     newData['footprint'] = attribute['attributeValue']
+                    if 'attributeUnit' in attribute:
+                        newData['footprint'] += attribute['attributeUnit']
 
         if 'datasheets' in productData:
             for datasheet in productData['datasheets']:
-                if 'datasheetURL' in newData:
-                    raise('Datasheet already there!')
-                newData['datasheetURL'] = datasheet['url']
+                if datasheet['description'] == 'Technical Data Sheet':
+                    if 'datasheetURL' in newData:
+                        raise('Datasheet already there!')
+                    newData['datasheetURL'] = datasheet['url']
 
         data = copy.copy(data)
         Database.mergeData(data, newData)
