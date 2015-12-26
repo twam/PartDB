@@ -11,7 +11,8 @@ class MouserTests(unittest.TestCase):
         '963-JMK325ABJ227MM-T',
         '960-IAA.01.121111',
         '71-CRCW0603-86.6K-E3',
-        '70-IHLP4040DZERR56M0'
+        '70-IHLP4040DZERR56M0',
+        '579-MCP3428E/SL',
     ]
 
     DISTRIBUTORPARTNUMBERS_INVALID = [
