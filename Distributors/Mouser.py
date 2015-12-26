@@ -4,6 +4,7 @@ import copy
 import urllib.request
 import bs4
 import Database
+import urllib.parse
 
 
 class Mouser(__Distributor.Distributor):
@@ -72,10 +73,42 @@ class Mouser(__Distributor.Distributor):
         else:
             raise Exception('No valid key found to query for data!')
 
+        if self.partDB.args.debug:
+            print('Loading URL %s ...' % url)
+
         req = urllib.request.Request(
             url, headers={'User-Agent': "electronic-parser"})
         page = urllib.request.urlopen(req)
-        soup = bs4.BeautifulSoup(page.read(), 'html.parser')
+        soup = bs4.BeautifulSoup(page.read(), 'html5lib')
+
+        searchResults = soup.find_all('div', id='searchResultsTbl')
+        if searchResults != []:
+            if self.partDB.args.debug:
+                print('Found search results on paging. Trying to find correct part.')
+
+            for row in searchResults[0].find_all(
+                    'tr', class_=lambda x: x == "SearchResultsRowOdd" or x == "SearchResultsRowEven"):
+
+                if row['data-partnumber'] == data['distributor'][self.name()
+                                                                 ]['distributorPartNumber']:
+
+                    cols = row.find_all('td')
+                    link_col = cols[2]
+                    newRelUrl = link_col.find_all('a')[0]['href']
+                    newUrl = urllib.parse.urljoin(url, newRelUrl)
+
+                    if self.partDB.args.debug:
+                        print('Part found! Loading new URL %s ...' % newUrl)
+
+                    req = urllib.request.Request(
+                        newUrl, headers={'User-Agent': "electronic-parser"})
+                    page = urllib.request.urlopen(req)
+                    soup = bs4.BeautifulSoup(page.read(), 'html5lib')
+
+                    break
+
+            if newUrl is None:
+                raise Exception("Did not find part in search results")
 
         # basic data
         productDesc = soup.find_all('div', id='product-desc')
