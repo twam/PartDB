@@ -33,9 +33,7 @@ class Print(__Command.Command):
                 k == self.partDB.args.id))
         if len(result) > 0:
             label = Label.Label()
-            label.createLabelFromData(
-                key=self.partDB.args.id, data=result[
-                    self.partDB.args.id])
+            label.createLabelFromData(data=result[self.partDB.args.id])
             label.cupsPrint(printerName=self.partDB.args.printerName)
         else:
             raise Exception(
