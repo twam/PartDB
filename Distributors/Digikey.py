@@ -16,7 +16,7 @@ class Digikey(__Distributor.Distributor):
             data = data.encode('ascii')
 
         matches = re.search(
-            br'^(?P<distributorPartNumber>[-+A-Z0-9]+-ND)$', data)
+            br'^(?P<distributorPartNumber>[-+A-Z0-9#/]+-ND)$', data)
         if matches:
             result = {}
             result['distributor'] = {}
@@ -53,12 +53,15 @@ class Digikey(__Distributor.Distributor):
 
         if 'distributorPartNumber' in data['distributor'][self.name()]:
             url = "http://search.digikey.com/scripts/DkSearch/dksus.dll?Detail&name={}".format(
-                data['distributor'][self.name()]['distributorPartNumber'])
+                urllib.parse.quote(data['distributor'][self.name()]['distributorPartNumber']))
         elif 'distributorPartId' in data['distributor'][self.name()]:
             url = "http://www.digikey.com/product-detail/en/x/x/{}".format(
                 data['distributor'][self.name()]['distributorPartId'])
         else:
             raise Exception('No valid key found to query for data!')
+
+        if self.partDB.args.debug:
+            print('Loading URL %s ...' % url)
 
         req = urllib.request.Request(
             url, headers={'User-Agent': "electronic-parser"})

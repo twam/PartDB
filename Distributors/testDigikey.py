@@ -13,7 +13,9 @@ class DigikeyTests(unittest.TestCase):
         'VLMU3100-GS08CT-ND',
         'ATMEGA644P-20AU-ND',
         'TSOP34840-ND',
-        'MAX214CWI+-ND']
+        'MAX214CWI+-ND',
+        'LTC4412ES6#TRPBFCT-ND',
+        'ENC28J60-I/SP-ND']
 
     DISTRIBUTORPARTNUMBERS_INVALID = [
         '',
