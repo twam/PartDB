@@ -51,21 +51,36 @@ class PartDB:
     def parseArguments(self):
 
         parser = argparse.ArgumentParser(
-            description='PartDB', prog=self.progname, add_help=False)
-        parser.add_argument("-h", "--help", action="help",
+            description='PartDB',
+            prog=self.progname,
+            add_help=False,
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+            fromfile_prefix_chars='@')
+
+        parser.add_argument("-h", "--help",
+                            action="help",
                             help="Show this help message and exit.")
 
-        parser.add_argument("--version", action="version",
-                            help="Show the version and exit.", version="0.1")
+        parser.add_argument("--version",
+                            action="version",
+                            help="Show the version and exit.",
+                            version="0.1")
 
-        parser.add_argument("-v", "--verbose", action="store_true", dest="verbose",
+        parser.add_argument("-v", "--verbose",
+                            action="store_true",
+                            dest="verbose",
                             help="Be verbose.")
 
-        parser.add_argument('-d', '--database', help='Specify database filename.',
-                            dest='databaseFilename', default='partdb.json', metavar='database')
+        parser.add_argument('-d', '--database',
+                            help='Specify database filename.',
+                            dest='databaseFilename',
+                            default='partdb.json',
+                            metavar='database')
 
-        parser.add_argument('--debug', help='print debug information',
-                            dest='debug', action='store_true')
+        parser.add_argument('--debug',
+                            help='print debug information',
+                            dest='debug',
+                            action='store_true')
 
         subparsers = parser.add_subparsers(
             help='Command to execute. See \'%s command -h\' for help on specific commands. The following commands are implemented:' % (self.progname), dest='command', metavar='command')

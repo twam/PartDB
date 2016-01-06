@@ -64,11 +64,21 @@ class Label:
                 text=data['manufacturerName'])
             offsetY += sizeSmall + fieldSpacing
 
+        pn_font_size = sizeLarge
+
+        meanWidth = sizeLarge * 0.65
+        print(len(data['manufacturerPartNumber']))
+        if len(data['manufacturerPartNumber']) > 550 / meanWidth:
+            pn_font_size = int(
+                550 / len(data['manufacturerPartNumber']) / 0.65
+            )
+            print("font size: %u" % pn_font_size)
+
         self.zpl.printText(
             x=textPosX,
             y=offsetY,
             width=550,
-            fontWidth=sizeLarge,
+            fontWidth=pn_font_size,
             fontHeight=sizeLarge,
             text=data['manufacturerPartNumber'])
         offsetY += sizeLarge
