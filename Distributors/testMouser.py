@@ -14,6 +14,7 @@ class MouserTests(unittest.TestCase):
         '70-IHLP4040DZERR56M0',
         '579-MCP3428E/SL',
         '700-DS3232MZ+',
+        '523-12401548E4#2A',
     ]
 
     DISTRIBUTORPARTNUMBERS_INVALID = [
