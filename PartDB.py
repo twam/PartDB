@@ -137,7 +137,12 @@ class PartDB:
         print("--- General ---")
         for key in sorted(data.keys()):
             if key != 'distributor':
-                print("%-30s: %s" % (key, data[key]))
+                if (key in self.db.SCHEMA) and (
+                        'formatter' in self.db.SCHEMA[key]):
+                    print("%-30s: %s" %
+                          (key, self.db.SCHEMA[key]['formatter'](data[key])))
+                else:
+                    print("%-30s: %s" % (key, data[key]))
 
         if 'distributor' in data:
             for distributorName in sorted(data['distributor'].keys()):

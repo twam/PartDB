@@ -78,11 +78,13 @@ class Database:
         'timestampCreated': {
             'type': float,
             'default': 0.0,
-            'help': 'Time of entry creation.'},
+            'help': 'Time of entry creation.',
+            'formatter': lambda x: time.strftime('%d.%m.%Y %H:%M', time.gmtime(x))},
         'timestampLastModified': {
             'type': float,
             'default': 0.0,
-            'help': 'Time of last update.'},
+            'help': 'Time of last update.',
+            'formatter': lambda x: time.strftime('%d.%m.%Y %H:%M', time.gmtime(x))},
     }
 
     KEYS_DISTRIBUTOR = SCHEMA['distributor']['entries']
