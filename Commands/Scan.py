@@ -87,12 +87,18 @@ class Scan(__Command.Command):
 
         self.partDB.displayItem(data)
 
-        # Ask for quantity if not there
-        print('Quantity is %u. Scan/Enter new quantity or press return:' %
+        print('Quantity is %u. Scan/Enter new quantity (+/- for relative) or press return:' %
               data['quantity'])
         quantityInput = self.scanAndInput()
         if quantityInput != b'':
-            data['quantity'] = int(quantityInput.decode('ascii'))
+            quantityInputAscii = quantityInput.decode('ascii')
+            # check if first character is + or -
+            if (quantityInputAscii[0]) == '+' or (quantityInputAscii[0] == '-'):
+                data['quantity'] += int(quantityInputAscii)
+            else:
+                data['quantity'] = int(quantityInputAscii)
+
+            print('New quantity is %u.' % (data['quantity']))
             self.partDB.db.update(data)
 
     def handleScannedNonPartId(self, data):
