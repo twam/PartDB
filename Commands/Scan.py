@@ -93,7 +93,8 @@ class Scan(__Command.Command):
         if quantityInput != b'':
             quantityInputAscii = quantityInput.decode('ascii')
             # check if first character is + or -
-            if (quantityInputAscii[0]) == '+' or (quantityInputAscii[0] == '-'):
+            if (quantityInputAscii[0]
+                ) == '+' or (quantityInputAscii[0] == '-'):
                 data['quantity'] += int(quantityInputAscii)
             else:
                 data['quantity'] = int(quantityInputAscii)

@@ -2,4 +2,5 @@ beautifulsoup4
 html5lib
 pyserial
 pycups
+suds-py3
 -e git://github.com/twam/pyzpl2.git#egg=pyzpl2

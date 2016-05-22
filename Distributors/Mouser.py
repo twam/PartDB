@@ -9,6 +9,7 @@ import suds.client
 import logging
 import config
 
+
 class Mouser(__Distributor.Distributor):
     WSDL_URL = "http://www.mouser.de/service/searchapi.asmx?WSDL"
 
@@ -69,13 +70,13 @@ class Mouser(__Distributor.Distributor):
             return None
 
     def meta_redirect(self, content):
-        soup  = bs4.BeautifulSoup(content, 'html5lib')
+        soup = bs4.BeautifulSoup(content, 'html5lib')
 
-        result = soup.find("meta",attrs={"http-equiv":"Refresh"})
+        result = soup.find("meta", attrs={"http-equiv": "Refresh"})
         if result:
-            wait,text=result["content"].split(";")
+            wait, text = result["content"].split(";")
             if text.lower().startswith("url="):
-                url=text[4:]
+                url = text[4:]
                 return url
         return None
 
@@ -85,7 +86,8 @@ class Mouser(__Distributor.Distributor):
         if 'distributorPartNumber' not in data['distributor'][self.name()]:
             raise Exception('No valid key found to query for data!')
 
-        distributorPartNumber = data['distributor'][self.name()]['distributorPartNumber']
+        distributorPartNumber = data['distributor'][
+            self.name()]['distributorPartNumber']
 
         soapClient = suds.client.Client(self.WSDL_URL)
         mouserHeader = soapClient.factory.create('MouserHeader')
@@ -100,14 +102,14 @@ class Mouser(__Distributor.Distributor):
 
         partId = 0
         while True:
-            if result.Parts.MouserPart[0].MouserPartNumber == distributorPartNumber:
+            if result.Parts.MouserPart[
+                    0].MouserPartNumber == distributorPartNumber:
                 break
 
-            partId+=1
+            partId += 1
 
-            if partId > result.NumberOfResult-1:
+            if partId > result.NumberOfResult - 1:
                 raise Exception('Part number not found in results.')
-
 
         print(result.Parts.MouserPart[0].Description)
 
