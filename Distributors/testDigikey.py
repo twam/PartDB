@@ -15,7 +15,8 @@ class DigikeyTests(unittest.TestCase):
         'TSOP34840-ND',
         'MAX214CWI+-ND',
         'LTC4412ES6#TRPBFCT-ND',
-        'ENC28J60-I/SP-ND']
+        'ENC28J60-I/SP-ND',
+        '541-10.0KHTR-ND']
 
     DISTRIBUTORPARTNUMBERS_INVALID = [
         '',

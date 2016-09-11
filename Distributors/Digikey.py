@@ -16,7 +16,7 @@ class Digikey(__Distributor.Distributor):
             data = data.encode('ascii')
 
         matches = re.search(
-            br'^(?P<distributorPartNumber>[-+A-Z0-9#/]+-ND)$', data)
+            br'^(?P<distributorPartNumber>[-+A-Z0-9#/.]+-ND)$', data)
         if matches:
             result = {}
             result['distributor'] = {}
