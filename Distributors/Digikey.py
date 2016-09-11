@@ -72,24 +72,34 @@ class Digikey(__Distributor.Distributor):
         #         return data
         #     else:
         #         raise
+
+        # save file for debugging
+        # with open('test.html', 'wb') as f:
+        #     f.write(page.read())
+        # raise Exception("Saved file :)")
+
         soup = bs4.BeautifulSoup(page.read(), 'html5lib')
 
         # basic data
-        productDetails = soup.find_all('table', class_='product-details')
+        productDetails = soup.find_all('table', id='product-details')
+
+        if (len(productDetails) == 0):
+            raise Exception("Product Details not found on page")
+
         newData = {
             "distributor": {
                 "digikey": {
                     "distributorName": "digikey",
-                    "distributorPartNumber": productDetails[0].find_all('td', id="reportpartnumber")[0].get_text().strip(),
+                    "distributorPartNumber": productDetails[0].find_all('td', id="reportPartNumber")[0].get_text().strip(),
                 },
             },
             "manufacturerPartNumber": productDetails[0].find_all('h1', itemprop="model")[0].contents[0].strip(),
-            "manufacturerName": productDetails[0].find_all('h2', itemprop="manufacturer")[0].contents[0].get_text().strip(),
+            "manufacturerName": productDetails[0].find_all('h2', itemprop="manufacturer")[0].get_text().strip(),
             "description": productDetails[0].find_all('td', itemprop="description")[0].contents[0].strip()
         }
 
         # try to get some additional specs
-        attributes = soup.find_all('td', class_='attributes-table-main')
+        attributes = soup.find_all('table', class_='attributes-table-main')
 
         for row in attributes[0].find_all('tr'):
             cells = row.find_all(re.compile("^t[hd]$"))
