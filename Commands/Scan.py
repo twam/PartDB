@@ -44,6 +44,11 @@ class Scan(__Command.Command):
                                help="Name of printer to print on.",
                                default='zebra')
 
+        subparser.add_argument('--fix',
+                               dest='fix',
+                               action='store_true',
+                               help='Try to fix database information.')
+
     def scan(self):
         ser = serial.Serial(self.partDB.args.device, timeout=0.05)
         ser.flushInput()
@@ -82,6 +87,41 @@ class Scan(__Command.Command):
 
         if len(result) == 0:
             raise Exception('Part ID %s not found in database.' % (partId))
+
+        if self.partDB.args.fix:
+            result = self.partDB.db.query(
+                filter=lambda k, v: (
+                    k == partId))
+            data = result[partId]
+
+            distributorMatches = {}
+            for distributorName in data['distributor']:
+                minimumData = {
+                    'distributor': {
+                        distributorName: {
+                            'distributorPartNumber': data['distributor'][distributorName]['distributorPartNumber']
+                        }
+                    }
+                }
+
+                newData = self.partDB.distributors[
+                    distributorName].getData(minimumData)
+
+                Database.mergeData(data, newData, override=True)
+
+            self.partDB.db.update(data)
+
+            if len(result) > 0:
+                if (self.partDB.args.printLabel):
+                    label = Label.Label()
+                    label.createLabelFromData(data=data)
+                    label.cupsPrint(printerName=self.partDB.args.printerName)
+            else:
+                raise Exception(
+                    'ID %s not found in database.' %
+                    (self.partDB.args.id))
+
+            return
 
         data = result[partId]
 
