@@ -95,7 +95,7 @@ class Mouser(__Distributor.Distributor):
         soapClient.set_options(soapheaders=mouserHeader)
         result = soapClient.service.SearchByPartNumber(distributorPartNumber)
 
-        print(result)
+        # print(result)
 
         if result.NumberOfResult == 0:
             raise Exception('Part number not found.')
@@ -121,7 +121,7 @@ class Mouser(__Distributor.Distributor):
                     "distributorPartNumber": distributorPartNumber,
                 }
             },
-            "manufacturerPartNumber": result.Parts.MouserPart[0].MouserPartNumber,
+            "manufacturerPartNumber": result.Parts.MouserPart[0].ManufacturerPartNumber,
             "description": result.Parts.MouserPart[0].Description
         }
 
