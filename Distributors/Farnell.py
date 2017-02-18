@@ -4,7 +4,7 @@ import copy
 import json
 import urllib
 import Database
-
+import config
 
 class Farnell(__Distributor.Distributor):
 
@@ -35,8 +35,10 @@ class Farnell(__Distributor.Distributor):
         newData = {}
 
         if 'distributorPartNumber' in data['distributor'][self.name()]:
-            url = "http://api.element14.com//catalog/products?term=id:{}&storeInfo.id=uk.farnell.com&resultsSettings.offset=0&resultsSettings.numberOfResults=1&resultsSettings.refinements.filters=&resultsSettings.responseGroup=large&callInfo.omitXmlSchema=false&callInfo.callback=&callInfo.responseDataFormat=json&callinfo.apiKey=***REMOVED***".format(
-                data['distributor'][self.name()]['distributorPartNumber'])
+            url = "http://api.element14.com//catalog/products?term=id:{}&storeInfo.id=uk.farnell.com&resultsSettings.offset=0&resultsSettings.numberOfResults=1&resultsSettings.refinements.filters=&resultsSettings.responseGroup=large&callInfo.omitXmlSchema=false&callInfo.callback=&callInfo.responseDataFormat=json&callinfo.apiKey={}".format(
+                data['distributor'][self.name()]['distributorPartNumber'],
+                config.FARNELL_API_KEY
+            )
         else:
             raise Exception('No valid key found to query for data!')
 

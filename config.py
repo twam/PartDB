@@ -1,1 +1,2 @@
 MOUSER_API_KEY = ""
+FARNELL_API_KEY = ""
