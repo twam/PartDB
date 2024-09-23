@@ -8,7 +8,7 @@ optimized for huge amounts of data.
 
 Run
 ```
-./PartDB.py -h
+partdb -h
 ```
 to get some help on usage.
 
