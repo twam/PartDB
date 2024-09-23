@@ -8,6 +8,8 @@ import urllib.parse
 
 import json
 
+# https://wmsc.lcsc.com/ftps/wm/product/detail?productCode=C1525
+
 class Lcsc(Distributor):
     def __init__(self, partDB):
         super().__init__(partDB)
@@ -48,7 +50,7 @@ class Lcsc(Distributor):
         if 'distributorPartId' not in data['distributor'][self.name()]:
             raise Exception('No valid key found to query for data!')
 
-        url = f"https://lcsc.com/pre_search/link?type=lcsc&&value={data['distributor'][self.name()]['distributorPartId']}"
+        url = f"https://wmsc.lcsc.com/ftps/wm/product/detail?productCode={data['distributor'][self.name()]['distributorPartId']}"
 
         req = urllib.request.Request(
             url, headers={'User-Agent': "electronic-parser"})
@@ -60,13 +62,10 @@ class Lcsc(Distributor):
         #     else:
         #         raise
 
-        soup = bs4.BeautifulSoup(page.read(), 'html5lib')
+        rawData = page.read().decode('utf_8')
+        jsonData = json.loads(rawData)
 
-        # basic data
-        infoTable = soup.find_all('table', class_='info-table')
-
-        if (len(infoTable) == 0):
-            raise Exception("Info Table not found on page")
+        print(jsonData)
 
         newData = {
             "distributor": {
@@ -77,23 +76,17 @@ class Lcsc(Distributor):
             },
         }
 
-        for row in infoTable[0].find_all('tr'):
-            cells = row.find_all(re.compile("^t[hd]$"))
-            if (len(cells) >= 2):
-                key = cells[0].get_text().strip()
-                val = cells[1].get_text().strip()
-
-                if key == 'Mfr.Part #':
-                    newData['manufacturerPartNumber'] = val
-                if key == 'Manufacturer':
-                    newData['manufacturerName'] = val
-                if key == 'Description':
-                    newData['description'] = val
-                elif key == 'Package':
-                    newData['footprint'] = val
-                elif key == 'Datasheet':
-                    val = cells[1].find_all('a')[0]['href']
-                    newData['datasheetURL'] = val
+        if (jsonData['code'] == 200) and ('result' in jsonData):
+            if 'productModel' in jsonData['result']:
+                newData['manufacturerPartNumber'] = jsonData['result']['productModel']
+            if 'brandNameEn' in jsonData['result']:
+                newData['manufacturerName'] = jsonData['result']['brandNameEn']
+            if 'productIntroEn' in jsonData['result']:
+                newData['description'] = jsonData['result']['productIntroEn']
+            if 'encapStandard' in jsonData['result']:
+                newData['footprint'] = jsonData['result']['encapStandard']
+            if 'pdfUrl' in jsonData['result']:
+                newData['datasheetURL'] = jsonData['result']['pdfUrl']
 
         data = copy.copy(data)
         mergeData(data, newData)
