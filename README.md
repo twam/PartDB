@@ -2,7 +2,7 @@
 
 PartDB is a tool written in Python to maintain a small database in the style of
 a JSON file of your (electronic) parts. It is meant to be simple and not
-optimized for huge amounts of data. Requires Python 3.5 or newer.
+optimized for huge amounts of data.
 
 ## Usage
 
