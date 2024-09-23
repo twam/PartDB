@@ -1,7 +1,7 @@
 import unittest
 import unittest.mock
-import Distributors.Digikey
-import PartDB
+from partdb.distributors.digikey import Digikey
+from partdb.__main__ import PartDB
 
 
 class DigikeyTests(unittest.TestCase):
@@ -48,8 +48,8 @@ class DigikeyTests(unittest.TestCase):
     ]
 
     def setUp(self):
-        self.partDB = unittest.mock.MagicMock(spec={PartDB.PartDB})
-        self.digikey = Distributors.Digikey.Digikey(self.partDB)
+        self.partDB = unittest.mock.MagicMock(spec={PartDB})
+        self.digikey = Digikey(self.partDB)
 
     def testMatchPartNumberValid(self):
         for distributorPartNumber in self.DISTRIBUTORPARTNUMBERS_VALID:

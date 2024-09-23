@@ -1,12 +1,12 @@
-from . import __Distributor
+from .__distributor import Distributor
 import re
 import copy
 import bs4
 import urllib
-import Database
+from ..database import mergeData
 
 
-class Digikey(__Distributor.Distributor):
+class Digikey(Distributor):
 
     def __init__(self, partDB):
         super().__init__(partDB)
@@ -116,6 +116,6 @@ class Digikey(__Distributor.Distributor):
                     newData['datasheetURL'] = val
 
         data = copy.copy(data)
-        Database.mergeData(data, newData)
+        mergeData(data, newData)
 
         return data

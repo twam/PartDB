@@ -1,10 +1,8 @@
-from . import __Command
-import Database
-import collections
-import Label
+from .__command import Command
+from ..label import Label
 
 
-class Print(__Command.Command):
+class Print(Command):
 
     def __init__(self, partDB):
         super().__init__(partDB)
@@ -32,7 +30,7 @@ class Print(__Command.Command):
             filter=lambda k, v: (
                 k == self.partDB.args.id))
         if len(result) > 0:
-            label = Label.Label()
+            label = Label()
             label.createLabelFromData(data=result[self.partDB.args.id])
             label.cupsPrint(printerName=self.partDB.args.printerName)
         else:

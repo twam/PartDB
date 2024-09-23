@@ -1,8 +1,8 @@
-from . import __Command
-import Database
+from .__command import Command
+from ..database import Database
 
 
-class Update(__Command.Command):
+class Update(Command):
 
     def __init__(self, partDB):
         super().__init__(partDB)
@@ -15,7 +15,7 @@ class Update(__Command.Command):
     def configureArgumentSubParser(subparser):
         super(__class__, Update).configureArgumentSubParser(subparser)
 
-        for key, val in Database.Database.SCHEMA.items():
+        for key, val in Database.SCHEMA.items():
             if 'argument' in val:
                 subparser.add_argument(*[x for x in [val['argument'], '--%s' % (key)] if x is not None],
                                        dest=key,
@@ -23,7 +23,7 @@ class Update(__Command.Command):
                                        type=val['type'],
                                        help=val['help'])
 
-        for key, val in Database.Database.KEYS_DISTRIBUTOR.items():
+        for key, val in Database.KEYS_DISTRIBUTOR.items():
             if 'argument' in val:
                 subparser.add_argument(*[x for x in [val['argument'], '--%s' % (key)] if x is not None],
                                        dest=key,

@@ -1,8 +1,8 @@
-from . import __Command
+from .__command import Command
 import re
 
 
-class Search(__Command.Command):
+class Search(Command):
 
     def __init__(self, partDB):
         super().__init__(partDB)

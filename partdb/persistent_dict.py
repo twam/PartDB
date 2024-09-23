@@ -44,8 +44,8 @@ class PersistentDict(dict):
         except Exception:
             os.remove(tempname)
             raise
-        finally:
-            fileobj.close()
+        # finally:
+        #     fileobj.close()
         shutil.move(tempname, self.filename)    # atomic commit
         if self.mode is not None:
             os.chmod(self.filename, self.mode)

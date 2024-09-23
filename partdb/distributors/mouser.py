@@ -1,16 +1,16 @@
-from . import __Distributor
+from .__distributor import Distributor
 import re
 import copy
 import urllib.request
 import bs4
-import Database
+from ..database import mergeData
 import urllib.parse
 import suds.client
 import logging
-import config
+from ..config import MOUSER_API_KEY
 
 
-class Mouser(__Distributor.Distributor):
+class Mouser(Distributor):
     WSDL_URL = "http://www.mouser.de/service/searchapi.asmx?WSDL"
 
     GROUP_MAP = {
@@ -91,7 +91,7 @@ class Mouser(__Distributor.Distributor):
 
         soapClient = suds.client.Client(self.WSDL_URL)
         mouserHeader = soapClient.factory.create('MouserHeader')
-        mouserHeader.AccountInfo.PartnerID = config.MOUSER_API_KEY
+        mouserHeader.AccountInfo.PartnerID = MOUSER_API_KEY
         soapClient.set_options(soapheaders=mouserHeader)
         result = soapClient.service.SearchByPartNumber(distributorPartNumber)
 
@@ -134,6 +134,6 @@ class Mouser(__Distributor.Distributor):
             newData['footprint'] = result.Parts.MouserPart[0].Package
 
         data = copy.copy(data)
-        Database.mergeData(data, newData)
+        mergeData(data, newData)
 
         return data

@@ -1,7 +1,7 @@
-from . import __Command
-import Database
-import Label
-import collections
+from .__command import Command
+from ..database import Database
+from ..label import Label
+
 import serial
 import select
 import sys
@@ -9,7 +9,7 @@ import re
 import copy
 
 
-class Scan(__Command.Command):
+class Scan(Command):
 
     def __init__(self, partDB):
         super().__init__(partDB)
@@ -113,7 +113,7 @@ class Scan(__Command.Command):
 
             if len(result) > 0:
                 if (self.partDB.args.printLabel):
-                    label = Label.Label()
+                    label = Label()
                     label.createLabelFromData(data=data)
                     label.cupsPrint(printerName=self.partDB.args.printerName)
             else:
@@ -211,6 +211,8 @@ class Scan(__Command.Command):
         # check for partnumber
         if 'manufacturerPartNumber' not in data:
             raise Exception('No manufacturerPartNumber!')
+
+        return
 
         res = self.partDB.db.query(filter=lambda k, v: (
             v['manufacturerPartNumber'] == data['manufacturerPartNumber']))

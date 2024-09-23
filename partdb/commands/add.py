@@ -1,9 +1,10 @@
-from . import __Command
-import Database
+from .__command import Command
+
+from ..database import Database
 import collections
 
 
-class Add(__Command.Command):
+class Add(Command):
 
     def __init__(self, partDB):
         super().__init__(partDB)
@@ -16,7 +17,7 @@ class Add(__Command.Command):
     def configureArgumentSubParser(subparser):
         super(__class__, Add).configureArgumentSubParser(subparser)
 
-        for key, val in Database.Database.SCHEMA.items():
+        for key, val in Database.SCHEMA.items():
             if 'argument' in val:
                 subparser.add_argument(*[x for x in [val['argument'], '--%s' % (key)] if x is not None],
                                        dest=key,
@@ -25,7 +26,7 @@ class Add(__Command.Command):
                                        type=val['type'],
                                        help=val['help'])
 
-        for key, val in Database.Database.KEYS_DISTRIBUTOR.items():
+        for key, val in Database.KEYS_DISTRIBUTOR.items():
             if 'argument' in val:
                 subparser.add_argument(*[x for x in [val['argument'], '--%s' % (key)] if x is not None],
                                        dest=key,
@@ -38,12 +39,12 @@ class Add(__Command.Command):
     def run(self):
         partData = {}
 
-        for key, val in Database.Database.SCHEMA.items():
+        for key, val in Database.SCHEMA.items():
             if 'argument' in val:
                 partData[key] = vars(self.partDB.args)[key]
 
         distributor = collections.defaultdict(dict)
-        for key, val in Database.Database.KEYS_DISTRIBUTOR.items():
+        for key, val in Database.KEYS_DISTRIBUTOR.items():
             if 'argument' in val:
                 pos = 0
                 data = vars(self.partDB.args)[key]

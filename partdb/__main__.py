@@ -3,11 +3,12 @@
 import argparse
 import sys
 import importlib
-import inspect
-import re
-import os
 import traceback
-import Database
+
+from pathlib import Path
+
+from .database import Database
+from .util import snake_case_to_camel_case
 
 
 class PartDB:
@@ -15,40 +16,49 @@ class PartDB:
     def __init__(self, argv):
         self.argv = argv
 
-        self.progname = os.path.basename(self.argv[0])
+        self.progname = Path(self.argv[0]).stem
 
         # Get path of the directory where this file is stored
-        self.basePath = os.path.dirname(os.path.abspath(
-            inspect.getfile(inspect.currentframe())))
+        self.basePath = Path(__file__).parent
 
-        self._loadCommands()
-        self._loadDistributors()
+        self._load_commands()
+        self._load_distributors()
 
-    def _loadCommands(self):
-        commandsDir = os.path.join(self.basePath, 'Commands')
+    def _load_commands(self):
+        commands_dir = self.basePath / 'commands'
         self.commands = {}
-        for command in os.listdir(commandsDir):
-            matches = re.match(r'(((?!test)[A-Za-z]+)\.py)', command)
-            if matches:
-                commandName = matches.groups()[1].lower()
-                className = matches.groups()[1]
 
-                self.commands[commandName] = getattr(
-                    importlib.import_module('Commands.' + className), className)(self)
+        for command in commands_dir.iterdir():
+            if not command.is_file():
+                continue
 
-    def _loadDistributors(self):
-        distributorsDir = os.path.join(self.basePath, 'Distributors')
+            if command.stem.startswith('__'):
+                continue
+
+            command_name = command.stem.lower()
+            class_name = snake_case_to_camel_case(command_name)
+
+            self.commands[command_name] = getattr(
+                importlib.import_module('partdb.commands.' + command_name), class_name)(self)
+
+    def _load_distributors(self):
+        distributors_dir = self.basePath / 'distributors'
         self.distributors = {}
-        for distributor in os.listdir(distributorsDir):
-            matches = re.match(r'(((?!test)[A-Za-z]+)\.py)', distributor)
-            if matches:
-                distributorName = matches.groups()[1].lower()
-                className = matches.groups()[1]
 
-                self.distributors[distributorName] = getattr(
-                    importlib.import_module('Distributors.' + className), className)(self)
+        for distributor in distributors_dir.iterdir():
+            if not distributor.is_file():
+                continue
 
-    def parseArguments(self):
+            if distributor.stem.startswith('__'):
+                continue
+
+            distributor_name = distributor.stem.lower()
+            class_name = snake_case_to_camel_case(distributor_name)
+
+            self.distributors[distributor_name] = getattr(
+                importlib.import_module('partdb.distributors.' + distributor_name), class_name)(self)
+
+    def parse_arguments(self):
 
         parser = argparse.ArgumentParser(
             description='PartDB',
@@ -154,10 +164,10 @@ class PartDB:
                         (key2, data['distributor'][distributorName][key2]))
 
     def run(self):
-        self.parseArguments()
+        self.parse_arguments()
 
         # open database
-        self.db = Database.Database(self.args.databaseFilename)
+        self.db = Database(self.args.databaseFilename)
 
         # call requested command
         command = self.commands[self.args.command]
@@ -171,5 +181,8 @@ class PartDB:
             else:
                 sys.exit("Unknown error: %s" % sys.exc_info()[0])
 
-if __name__ == '__main__':
+def main():
     PartDB(sys.argv).run()
+
+if __name__ == '__main__':
+    main()

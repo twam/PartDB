@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "partdb"
+version = "0.0.0"
+description = "Part DB"
+authors = ["Tobias Müller <Tobias_Mueller@twam.info>"]
+readme = "README.md"
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+beautifulsoup4 = "*"
+html5lib = "*"
+pyserial = "*"
+pycups = "*"
+suds-py3 = "*"
+pyzpl2 = { git = "https://github.com/twam/pyzpl2.git", branch = "master" }
+
+
+[tool.poetry.scripts]
+partdb = 'partdb.__main__:main'
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+pattern = "^(?P<base>\\d+\\.\\d+\\.\\d+)$"

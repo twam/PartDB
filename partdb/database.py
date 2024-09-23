@@ -1,8 +1,10 @@
-import PersistentDict
 import collections
 import copy
 import uuid
 import time
+
+from .persistent_dict import PersistentDict
+
 
 
 def mergeData(dest, src, override=False):
@@ -89,9 +91,9 @@ class Database:
 
     KEYS_DISTRIBUTOR = SCHEMA['distributor']['entries']
 
-    def __init__(self, filename):
+    def __init__(self, filename: str):
         self.filename = filename
-        self.persistentDict = PersistentDict.PersistentDict(
+        self.persistentDict = PersistentDict(
             self.filename, format='json')
 
     def __del__(self):

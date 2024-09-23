@@ -1,5 +1,5 @@
 import unittest
-import Database
+from partdb.database import Database, mergeData
 import os
 import time
 import uuid
@@ -35,7 +35,7 @@ class DatabaseTests(unittest.TestCase):
         if os.path.isfile(self.TESTDATABASEFILENAME):
             os.remove(self.TESTDATABASEFILENAME)
 
-        self.db = Database.Database(self.TESTDATABASEFILENAME)
+        self.db = Database(self.TESTDATABASEFILENAME)
 
     def tearDown(self):
         # close database so file will actually be written
@@ -230,7 +230,7 @@ class DatabaseTests(unittest.TestCase):
         dest = {}
         src = {}
 
-        Database.mergeData(dest, src)
+        mergeData(dest, src)
 
         self.assertEqual(dest, {})
 
@@ -238,7 +238,7 @@ class DatabaseTests(unittest.TestCase):
         dest = {}
         src = {'a': 'A'}
 
-        Database.mergeData(dest, src)
+        mergeData(dest, src)
 
         self.assertEqual(dest, {'a': 'A'})
 
@@ -246,7 +246,7 @@ class DatabaseTests(unittest.TestCase):
         dest = {'a': 'A'}
         src = {}
 
-        Database.mergeData(dest, src)
+        mergeData(dest, src)
 
         self.assertEqual(dest, {'a': 'A'})
 
@@ -254,7 +254,7 @@ class DatabaseTests(unittest.TestCase):
         dest = {'a': 'DEST'}
         src = {'a': 'SRC'}
 
-        Database.mergeData(dest, src, override=False)
+        mergeData(dest, src, override=False)
 
         self.assertEqual(dest, {'a': 'DEST'})
 
@@ -262,7 +262,7 @@ class DatabaseTests(unittest.TestCase):
         dest = {'a': 'DEST'}
         src = {'a': 'SRC'}
 
-        Database.mergeData(dest, src, override=True)
+        mergeData(dest, src, override=True)
 
         self.assertEqual(dest, {'a': 'SRC'})
 
@@ -270,7 +270,7 @@ class DatabaseTests(unittest.TestCase):
         dest = {}
         src = {'a': {'a1': 'A1'}}
 
-        Database.mergeData(dest, src)
+        mergeData(dest, src)
 
         self.assertEqual(dest, {'a': {'a1': 'A1'}})
 
@@ -278,7 +278,7 @@ class DatabaseTests(unittest.TestCase):
         dest = {'a': {'a1': 'DEST'}}
         src = {'a': {'a1': 'SRC'}}
 
-        Database.mergeData(dest, src, override=False)
+        mergeData(dest, src, override=False)
 
         self.assertEqual(dest, {'a': {'a1': 'DEST'}})
 
@@ -286,6 +286,6 @@ class DatabaseTests(unittest.TestCase):
         dest = {'a': {'a1': 'DEST'}}
         src = {'a': {'a1': 'SRC'}}
 
-        Database.mergeData(dest, src, override=True)
+        mergeData(dest, src, override=True)
 
         self.assertEqual(dest, {'a': {'a1': 'SRC'}})

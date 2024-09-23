@@ -1,7 +1,7 @@
-from . import __Command
+from .__command import Command
 
 
-class Delete(__Command.Command):
+class Delete(Command):
 
     def __init__(self, partDB):
         super().__init__(partDB)

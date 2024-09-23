@@ -1,12 +1,12 @@
-from . import __Distributor
+from .__distributor import Distributor
 import re
 import copy
 import json
 import urllib
-import Database
-import config
+from ..database import mergeData
+from ..config import FARNELL_API_KEY
 
-class Farnell(__Distributor.Distributor):
+class Farnell(Distributor):
 
     def __init__(self, partDB):
         super().__init__(partDB)
@@ -37,7 +37,7 @@ class Farnell(__Distributor.Distributor):
         if 'distributorPartNumber' in data['distributor'][self.name()]:
             url = "http://api.element14.com//catalog/products?term=id:{}&storeInfo.id=uk.farnell.com&resultsSettings.offset=0&resultsSettings.numberOfResults=1&resultsSettings.refinements.filters=&resultsSettings.responseGroup=large&callInfo.omitXmlSchema=false&callInfo.callback=&callInfo.responseDataFormat=json&callinfo.apiKey={}".format(
                 data['distributor'][self.name()]['distributorPartNumber'],
-                config.FARNELL_API_KEY
+                FARNELL_API_KEY
             )
         else:
             raise Exception('No valid key found to query for data!')
@@ -88,6 +88,6 @@ class Farnell(__Distributor.Distributor):
                     newData['datasheetURL'] = datasheet['url']
 
         data = copy.copy(data)
-        Database.mergeData(data, newData)
+        mergeData(data, newData)
 
         return data
