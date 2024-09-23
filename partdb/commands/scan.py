@@ -1,5 +1,5 @@
 from .__command import Command
-from ..database import Database
+from ..database import mergeData
 from ..label import Label
 
 import serial
@@ -43,6 +43,11 @@ class Scan(Command):
                                metavar='printer-name',
                                help="Name of printer to print on.",
                                default='zebra')
+
+        subparser.add_argument('--dry-run',
+                               dest='dryRun',
+                               action='store_true',
+                               help="Don't add any new parts to the database and/or print a label.")
 
         subparser.add_argument('--fix',
                                dest='fix',
@@ -94,7 +99,6 @@ class Scan(Command):
                     k == partId))
             data = result[partId]
 
-            distributorMatches = {}
             for distributorName in data['distributor']:
                 minimumData = {
                     'distributor': {
@@ -107,7 +111,7 @@ class Scan(Command):
                 newData = self.partDB.distributors[
                     distributorName].getData(minimumData)
 
-                Database.mergeData(data, newData, override=True)
+                mergeData(data, newData, override=True)
 
             self.partDB.db.update(data)
 
@@ -184,10 +188,10 @@ class Scan(Command):
         data = {}
 
         if distributorMatches[distributorName]['barCode']:
-            Database.mergeData(data, distributorMatches[distributorName][
+            mergeData(data, distributorMatches[distributorName][
                                'barCode'], override=True)
         if distributorMatches[distributorName]['manufacturerPartNumber']:
-            Database.mergeData(data, distributorMatches[distributorName][
+            mergeData(data, distributorMatches[distributorName][
                                'manufacturerPartNumber'], override=True)
 
         data = self.partDB.distributors[distributorName].getData(data)
@@ -227,6 +231,8 @@ class Scan(Command):
             self.partDB.db.update(oldData)
             return
 
+        if self.dryRun is True:
+            return
         # Add part to database
         data = self.partDB.db.add(data)
         print('Added with key %s.' % data['id'])
